@@ -1437,7 +1437,8 @@
       drawWheel();
     }
 
-    imageUpload.addEventListener("change", async (event) => {
+    alert("Upload is disabled in live site. Use images from Photo folder.");
+return;
       const files = Array.from(event.target.files || []);
       if (!files.length) return;
 
