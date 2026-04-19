@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Picker Wheel Pro</title>
+  <style>
+    :root {
+      --bg: #eef2f7;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --accent: #111827;
+      --accent-2: #2563eb;
+      --danger: #ef4444;
+      --shadow: 0 12px 32px rgba(0,0,0,0.12);
+      --radius: 18px;
+      --wheel-size: min(92vw, 560px);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .app {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 20px;
+      min-height: 100vh;
+    }
+
+    .panel {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .wheel-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .title-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .title-row h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .pointer {
+      width: 0;
+      height: 0;
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-top: 32px solid var(--danger);
+      margin-bottom: -8px;
+      z-index: 3;
+      filter: drop-shadow(0 3px 4px rgba(0,0,0,0.22));
+    }
+
+    .canvas-wrap {
+      width: var(--wheel-size);
+      height: var(--wheel-size);
+      position: relative;
+    }
+
+    canvas#wheel {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+      touch-action: none;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+    }
+
+    button, .file-label {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+    }
+
+    button:hover, .file-label:hover {
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .primary { background: var(--accent); color: #fff; }
+    .secondary { background: #e5e7eb; color: var(--text); }
+    .blue { background: var(--accent-2); color: #fff; }
+
+    .hidden-input {
+      display: none;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .winner-box {
+      padding: 14px;
+      border-radius: 14px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      text-align: center;
+    }
+
+    .winner-box img {
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-top: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+    }
+
+    .settings {
+      display: grid;
+      gap: 12px;
+    }
+
+    .setting {
+      display: grid;
+      gap: 6px;
+    }
+
+    .setting label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .setting input[type="range"] {
+      width: 100%;
+    }
+
+    .setting .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+      max-height: 420px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .item {
+      display: grid;
+      grid-template-columns: 58px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 8px;
+      border-radius: 12px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+
+    .item img {
+      width: 58px;
+      height: 58px;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #ddd;
+    }
+
+    .item .name {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .item .path {
+      font-size: 12px;
+      color: var(--muted);
+      word-break: break-word;
+    }
+
+    .tiny-btn {
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #fee2e2;
+      color: #991b1b;
+      border: none;
+      cursor: pointer;
+    }
+
+    .full-screen {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 16px;
+    }
+
+    .full-screen.active {
+      display: flex;
+    }
+
+    .full-screen .canvas-wrap {
+      width: min(96vw, 92vh);
+      height: min(96vw, 92vh);
+    }
+
+    .full-screen .close-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+    }
+
+    .confetti {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 4;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 16px;
+      opacity: 0.9;
+      top: -20px;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+      .list {
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="panel wheel-panel">
+      <div class="title-row">
+        <div>
+          <h1>Image Picker Wheel Pro</h1>
+          <div class="muted">Upload images, spin with sound, celebrate the winner, and use full screen.</div>
+        </div>
+      </div>
+
+      <div class="pointer"></div>
+
+      <div class="canvas-wrap">
+        <canvas id="wheel" width="560" height="560"></canvas>
+        <div class="confetti" id="confettiLayer"></div>
+      </div>
+
+      <div class="controls">
+        <button id="spinBtn" class="primary">Spin Wheel</button>
+        <button id="redrawBtn" class="secondary">Redraw</button>
+        <label class="file-label blue" for="imageUpload">Upload Images</label>
+        <input id="imageUpload" class="hidden-input" type="file" accept="image/*" multiple />
+        <button id="fullscreenBtn" class="secondary">Full Screen</button>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="panel">
+        <h2 style="margin-top:0;">Winner</h2>
+        <div class="winner-box">
+          <div id="winnerText"><strong>Winner:</strong> None yet</div>
+          <img id="winnerImage" alt="Winner preview" style="display:none;" />
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 style="margin-top:0;">Settings</h2>
+        <div class="settings">
+          <div class="setting">
+            <label for="spinDuration">Spin duration</label>
+            <div class="row">
+              <input id="spinDuration" type="range" min="2" max="8" step="0.5" value="4.5" />
+              <span id="spinDurationValue">4.5s</span>
+            </div>
+          </div>
+
+          <div class="setting">
+            <label for="soundToggle">Sound effects</label>
+            <div class="row">
+              <input id="soundToggle" type="checkbox" checked />
+              <span class="muted">Tick while spinning + winner tone</span>
+            </div>
+          </div>
+
+          <div class="setting">
+            <label for="confettiToggle">Confetti</label>
+            <div class="row">
+              <input id="confettiToggle" type="checkbox" checked />
+              <span class="muted">Celebrate the selected image</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 style="margin-top:0;">Images</h2>
+        <div class="muted" style="margin-bottom:12px;">
+          You can upload your own images. Thumbnails appear inside the wheel slices.
+        </div>
+        <div class="list" id="imageList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="full-screen" id="fullscreenOverlay">
+    <button id="closeFullscreenBtn" class="secondary close-btn">Close</button>
+    <div class="pointer"></div>
+    <div class="canvas-wrap">
+      <canvas id="wheelFullscreen" width="900" height="900"></canvas>
+      <div class="confetti" id="confettiLayerFullscreen"></div>
+    </div>
+  </div>
+
+  <script>
+    const defaultItems = [
+      { label: "Sample 1", image: "https://picsum.photos/400/400?random=11" },
+      { label: "Sample 2", image: "https://picsum.photos/400/400?random=12" },
+      { label: "Sample 3", image: "https://picsum.photos/400/400?random=13" },
+      { label: "Sample 4", image: "https://picsum.photos/400/400?random=14" },
+      { label: "Sample 5", image: "https://picsum.photos/400/400?random=15" },
+      { label: "Sample 6", image: "https://picsum.photos/400/400?random=16" }
+    ];
+
+    const fallbackColors = [
+      "#fecaca", "#fed7aa", "#fde68a", "#bbf7d0",
+      "#bfdbfe", "#ddd6fe", "#fbcfe8", "#a5f3fc"
+    ];
+
+    let items = [...defaultItems];
+    let loadedImages = [];
+    let currentRotation = 0;
+    let spinning = false;
+    let tickInterval = null;
+
+    const canvas = document.getElementById("wheel");
+    const ctx = canvas.getContext("2d");
+    const canvasFs = document.getElementById("wheelFullscreen");
+    const ctxFs = canvasFs.getContext("2d");
+
+    const spinBtn = document.getElementById("spinBtn");
+    const redrawBtn = document.getElementById("redrawBtn");
+    const imageUpload = document.getElementById("imageUpload");
+    const fullscreenBtn = document.getElementById("fullscreenBtn");
+    const fullscreenOverlay = document.getElementById("fullscreenOverlay");
+    const closeFullscreenBtn = document.getElementById("closeFullscreenBtn");
+
+    const winnerText = document.getElementById("winnerText");
+    const winnerImage = document.getElementById("winnerImage");
+    const imageList = document.getElementById("imageList");
+
+    const spinDurationSlider = document.getElementById("spinDuration");
+    const spinDurationValue = document.getElementById("spinDurationValue");
+    const soundToggle = document.getElementById("soundToggle");
+    const confettiToggle = document.getElementById("confettiToggle");
+
+    const confettiLayer = document.getElementById("confettiLayer");
+    const confettiLayerFullscreen = document.getElementById("confettiLayerFullscreen");
+
+    function updateDurationLabel() {
+      spinDurationValue.textContent = `${spinDurationSlider.value}s`;
+    }
+
+    updateDurationLabel();
+    spinDurationSlider.addEventListener("input", updateDurationLabel);
+
+    function createImageList() {
+      imageList.innerHTML = "";
+      items.forEach((item, index) => {
+        const row = document.createElement("div");
+        row.className = "item";
+
+        row.innerHTML = `
+          <img src="${item.image}" alt="${item.label}">
+          <div>
+            <div class="name">${item.label}</div>
+            <div class="path">${item.image.startsWith('blob:') ? 'Uploaded image' : item.image}</div>
+          </div>
+        `;
+
+        const removeBtn = document.createElement("button");
+        removeBtn.className = "tiny-btn";
+        removeBtn.textContent = "Remove";
+        removeBtn.addEventListener("click", () => {
+          if (items.length <= 2) {
+            alert("Keep at least 2 images on the wheel.");
+            return;
+          }
+          items.splice(index, 1);
+          reloadAndDraw();
+        });
+
+        row.appendChild(removeBtn);
+        imageList.appendChild(row);
+      });
+    }
+
+    function loadImages() {
+      return Promise.all(
+        items.map((item) => new Promise((resolve) => {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.onload = () => resolve({ ok: true, img });
+          img.onerror = () => resolve({ ok: false, img: null });
+          img.src = item.image;
+        }))
+      );
+    }
+
+    function drawWheelOnContext(context, size, rotation = 0) {
+      const centerX = size / 2;
+      const centerY = size / 2;
+      const radius = size * 0.46;
+      const sliceAngle = (2 * Math.PI) / items.length;
+
+      context.clearRect(0, 0, size, size);
+
+      for (let i = 0; i < items.length; i++) {
+        const start = rotation + i * sliceAngle - Math.PI / 2;
+        const end = start + sliceAngle;
+
+        context.beginPath();
+        context.moveTo(centerX, centerY);
+        context.arc(centerX, centerY, radius, start, end);
+        context.closePath();
+        context.fillStyle = fallbackColors[i % fallbackColors.length];
+        context.fill();
+
+        context.save();
+        context.beginPath();
+        context.moveTo(centerX, centerY);
+        context.arc(centerX, centerY, radius, start, end);
+        context.closePath();
+        context.clip();
+
+        const loaded = loadedImages[i];
+        if (loaded && loaded.ok && loaded.img) {
+          const img = loaded.img;
+          const drawArea = radius * 1.55;
+
+          context.save();
+          context.translate(centerX, centerY);
+          context.rotate(start + sliceAngle / 2);
+          context.translate(radius * 0.42, 0);
+          context.rotate(Math.PI / 2);
+
+          const scale = Math.max(drawArea / img.width, drawArea / img.height);
+          const w = img.width * scale;
+          const h = img.height * scale;
+
+          context.globalAlpha = 0.93;
+          context.drawImage(img, -w / 2, -h / 2, w, h);
+          context.restore();
+        } else {
+          context.fillStyle = "rgba(255,255,255,0.35)";
+          context.fillRect(0, 0, size, size);
+        }
+
+        context.restore();
+
+        context.beginPath();
+        context.moveTo(centerX, centerY);
+        context.arc(centerX, centerY, radius, start, end);
+        context.closePath();
+        context.fillStyle = "rgba(255,255,255,0.10)";
+        context.fill();
+
+        context.beginPath();
+        context.moveTo(centerX, centerY);
+        context.arc(centerX, centerY, radius, start, end);
+        context.closePath();
+        context.lineWidth = Math.max(2, size * 0.004);
+        context.strokeStyle = "rgba(255,255,255,0.95)";
+        context.stroke();
+
+        context.save();
+        context.translate(centerX, centerY);
+        context.rotate(start + sliceAngle / 2);
+        context.textAlign = "center";
+        context.fillStyle = "#111827";
+        context.strokeStyle = "rgba(255,255,255,0.96)";
+        context.lineWidth = Math.max(4, size * 0.008);
+        context.font = `bold ${Math.max(14, size * 0.032)}px Arial`;
+        const labelRadius = radius * 0.72;
+        context.strokeText(items[i].label, labelRadius, 0);
+        context.fillText(items[i].label, labelRadius, 0);
+        context.restore();
+      }
+
+      context.beginPath();
+      context.arc(centerX, centerY, size * 0.08, 0, 2 * Math.PI);
+      context.fillStyle = "#fff";
+      context.fill();
+      context.lineWidth = Math.max(5, size * 0.01);
+      context.strokeStyle = "#111827";
+      context.stroke();
+
+      context.fillStyle = "#111827";
+      context.textAlign = "center";
+      context.font = `bold ${Math.max(14, size * 0.024)}px Arial`;
+      context.fillText("SPIN", centerX, centerY + 5);
+    }
+
+    function drawWheel(rotation = currentRotation) {
+      drawWheelOnContext(ctx, canvas.width, rotation);
+      drawWheelOnContext(ctxFs, canvasFs.width, rotation);
+    }
+
+    function getWinnerIndex(rotation) {
+      const sliceAngle = (2 * Math.PI) / items.length;
+      const normalized = ((rotation % (2 * Math.PI)) + (2 * Math.PI)) % (2 * Math.PI);
+      const pointerAngle = (3 * Math.PI / 2 - normalized + 2 * Math.PI) % (2 * Math.PI);
+      return Math.floor(pointerAngle / sliceAngle) % items.length;
+    }
+
+    function showWinner(index) {
+      const winner = items[index];
+      winnerText.innerHTML = `<strong>Winner:</strong> ${winner.label}`;
+      winnerImage.src = winner.image;
+      winnerImage.style.display = "block";
+
+      if (confettiToggle.checked) {
+        launchConfetti(confettiLayer);
+        if (fullscreenOverlay.classList.contains("active")) {
+          launchConfetti(confettiLayerFullscreen);
+        }
+      }
+
+      if (soundToggle.checked) {
+        playWinnerTone();
+      }
+    }
+
+    function spinWheel() {
+      if (spinning || items.length < 2) return;
+
+      spinning = true;
+      spinBtn.disabled = true;
+      winnerText.innerHTML = "<strong>Winner:</strong> Spinning...";
+      winnerImage.style.display = "none";
+
+      const duration = parseFloat(spinDurationSlider.value) * 1000;
+      const extraTurns = 6 + Math.random() * 4;
+      const randomOffset = Math.random() * Math.PI * 2;
+      const targetRotation = currentRotation + extraTurns * Math.PI * 2 + randomOffset;
+      const initialRotation = currentRotation;
+      const startTime = performance.now();
+
+      startTicking();
+
+      function animate(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 4);
+
+        currentRotation = initialRotation + (targetRotation - initialRotation) * eased;
+        drawWheel(currentRotation);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          stopTicking();
+          const winnerIndex = getWinnerIndex(currentRotation);
+          showWinner(winnerIndex);
+          spinning = false;
+          spinBtn.disabled = false;
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    function launchConfetti(layer) {
+      layer.innerHTML = "";
+      const colors = ["#ef4444", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6", "#ec4899"];
+      const count = 90;
+
+      for (let i = 0; i < count; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti-piece";
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+        piece.style.animationDuration = `${2.4 + Math.random() * 2.2}s`;
+        piece.style.animationDelay = `${Math.random() * 0.35}s`;
+        piece.style.width = `${8 + Math.random() * 6}px`;
+        piece.style.height = `${10 + Math.random() * 12}px`;
+        layer.appendChild(piece);
+      }
+
+      setTimeout(() => {
+        layer.innerHTML = "";
+      }, 5000);
+    }
+
+    function playBeep(freq = 700, duration = 0.04, type = "square", gainValue = 0.03) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const audioCtx = playBeep.audioCtx || new AudioCtx();
+      playBeep.audioCtx = audioCtx;
+
+      const oscillator = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      oscillator.type = type;
+      oscillator.frequency.value = freq;
+      gain.gain.value = gainValue;
+      oscillator.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      const now = audioCtx.currentTime;
+      oscillator.start(now);
+      oscillator.stop(now + duration);
+    }
+
+    function startTicking() {
+      if (!soundToggle.checked) return;
+      stopTicking();
+      tickInterval = setInterval(() => {
+        playBeep(900, 0.02, "square", 0.02);
+      }, 110);
+    }
+
+    function stopTicking() {
+      if (tickInterval) {
+        clearInterval(tickInterval);
+        tickInterval = null;
+      }
+    }
+
+    function playWinnerTone() {
+      playBeep(660, 0.08, "sine", 0.035);
+      setTimeout(() => playBeep(880, 0.08, "sine", 0.035), 110);
+      setTimeout(() => playBeep(1180, 0.12, "sine", 0.04), 230);
+    }
+
+    async function reloadAndDraw() {
+      createImageList();
+      loadedImages = await loadImages();
+      drawWheel();
+    }
+
+    imageUpload.addEventListener("change", async (event) => {
+      const files = Array.from(event.target.files || []);
+      if (!files.length) return;
+
+      const uploaded = files.map((file, index) => ({
+        label: file.name.replace(/\.[^.]+$/, "") || `Upload ${index + 1}`,
+        image: URL.createObjectURL(file)
+      }));
+
+      items = uploaded;
+      currentRotation = 0;
+      await reloadAndDraw();
+      event.target.value = "";
+    });
+
+    spinBtn.addEventListener("click", spinWheel);
+    redrawBtn.addEventListener("click", () => drawWheel());
+
+    fullscreenBtn.addEventListener("click", () => {
+      fullscreenOverlay.classList.add("active");
+      drawWheel(currentRotation);
+    });
+
+    closeFullscreenBtn.addEventListener("click", () => {
+      fullscreenOverlay.classList.remove("active");
+    });
+
+    fullscreenOverlay.addEventListener("click", (event) => {
+      if (event.target === fullscreenOverlay) {
+        fullscreenOverlay.classList.remove("active");
+      }
+    });
+
+    async function init() {
+      await reloadAndDraw();
+    }
+
+    init();
+  </script>
+</body>
+</html>
