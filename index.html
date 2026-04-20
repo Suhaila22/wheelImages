@@ -1449,10 +1449,9 @@ function loadImages() {
     }
 
     async function reloadAndDraw() {
-      loadedImages = await loadImages();
-      createImageList();
-      updateStatsUI();
-      drawWheel();
+    loadedImages = await loadImages();
+    console.log("LoadedImages:", loadedImages);
+    drawWheel();
     }
 
     imageUpload.addEventListener("change", async (event) => {
