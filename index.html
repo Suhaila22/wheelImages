@@ -1130,19 +1130,20 @@
       });
     }
 
- function loadImages() {
+function loadImages() {
   return Promise.all(
-    items.map((item) => new Promise((resolve) => {
+    items.map((item, i) => new Promise((resolve) => {
       const img = new Image();
-      console.log("Trying image:", item.image, new URL(item.image, location.href).href);
+
+      console.log("Trying:", item.image);
 
       img.onload = () => {
-        console.log("Loaded:", item.image);
+        console.log("✅ Loaded:", item.image);
         resolve({ ok: true, img });
       };
 
       img.onerror = () => {
-        console.log("FAILED:", item.image, new URL(item.image, location.href).href);
+        console.log("❌ FAILED:", item.image);
         resolve({ ok: false, img: null });
       };
 
@@ -1179,8 +1180,12 @@
 
         const loaded = loadedImages[i];
         if (loaded && loaded.ok && loaded.img) {
-          const img = loaded.img;
-          const drawArea = radius * 1.55;
+        const img = loaded.img;
+        context.drawImage(img, centerX - radius, centerY - radius, radius * 2, radius * 2);
+         } else {
+        context.fillStyle = fallbackColors[i % fallbackColors.length];
+        context.fill();
+        }
 
           context.save();
           context.translate(centerX, centerY);
