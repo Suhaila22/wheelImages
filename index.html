@@ -629,279 +629,283 @@
 
     let currentLang = localStorage.getItem("sufana_lang") || "en";
 
-   let items = JSON.parse(localStorage.getItem("sufana_wheel_items") || "null") || [
-{
-  id: cryptoRandomId(),
-  label_en: "Quiet Luxury",
-  label_ar: "فخامة هادئة",
-  image: "./Photo/1.jpg",
-  tip_en: "True luxury is a calm mind and a healthy heart.",
-  tip_ar: "الفخامة الحقيقية هي راحة البال وصحة القلب.",
-  winner: false
-},
-    
-  {
-    id: cryptoRandomId(),
-    label_en: "Health Value",
-    label_ar: "قيمة الصحة",
-    image: "./Photo/2.jpg",
-    tip_en: "Your health is the most valuable thing you own—treat it that way.",
-    tip_ar: "صحتك هي أغلى ما تملك — عاملها كذلك.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Moment of Care",
-    label_ar: "لحظة عناية",
-    image: "./Photo/3.jpg",
-    tip_en: "A quiet moment of care can change everything.",
-    tip_ar: "لحظة هادئة من العناية قد تغير كل شيء.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Elegant Care",
-    label_ar: "أناقة العناية",
-    image: "./Photo/4.jpg",
-    tip_en: "Elegance begins with taking care of yourself.",
-    tip_ar: "الأناقة تبدأ من العناية بنفسك.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Future Self",
-    label_ar: "مستقبلك الصحي",
-    image: "./Photo/5.jpg",
-    tip_en: "Your future self is built by today’s small choices.",
-    tip_ar: "مستقبلك الصحي يُبنى باختياراتك الصغيرة اليوم.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Peace of Mind",
-    label_ar: "راحة البال",
-    image: "./Photo/6.jpg",
-    tip_en: "Peace of mind starts with knowing your numbers.",
-    tip_ar: "راحة البال تبدأ بمعرفة قراءاتك.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Wellness Lifestyle",
-    label_ar: "أسلوب العافية",
-    image: "./Photo/7.jpg",
-    tip_en: "Wellness is not a trend—it’s a lifestyle.",
-    tip_ar: "العافية ليست موضة — بل أسلوب حياة.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Balanced Life",
-    label_ar: "حياة متوازنة",
-    image: "./Photo/8.jpg",
-    tip_en: "A balanced life is the ultimate form of success.",
-    tip_ar: "الحياة المتوازنة هي أعلى درجات النجاح.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "You Matter",
-    label_ar: "أنت مهم",
-    image: "./Photo/9.jpg",
-    tip_en: "Take care of yourself—no one can replace you.",
-    tip_ar: "اعتنِ بنفسك — لا أحد يمكنه أن يحل مكانك.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Silent Luxury",
-    label_ar: "الفخامة الصامتة",
-    image: "./Photo/10.jpg",
-    tip_en: "Health is the silent luxury behind every beautiful life.",
-    tip_ar: "الصحة هي الفخامة الصامتة خلف كل حياة جميلة.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Softness",
-    label_ar: "اللطف والهدوء",
-    image: "./Photo/11.jpg",
-    tip_en: "Slow down. Your heart deserves softness.",
-    tip_ar: "اهدأ… قلبك يستحق اللطف.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Refined Habit",
-    label_ar: "عادة راقية",
-    image: "./Photo/12.jpg",
-    tip_en: "Caring for yourself is the most refined habit.",
-    tip_ar: "العناية بنفسك هي أرقى عادة.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Healthy Identity",
-    label_ar: "هوية صحية",
-    image: "./Photo/13.jpg",
-    tip_en: "Your routine is your identity—make it healthy.",
-    tip_ar: "روتينك هو هويتك — اجعله صحيًا.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Luxury Control",
-    label_ar: "ترف التحكم",
-    image: "./Photo/14.jpg",
-    tip_en: "Luxury is having control over your wellbeing.",
-    tip_ar: "الفخامة هي أن تتحكم في صحتك.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Calm Heart",
-    label_ar: "قلب هادئ",
-    image: "./Photo/15.jpg",
-    tip_en: "A calm heart creates a powerful life.",
-    tip_ar: "القلب الهادئ يصنع حياة قوية.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Listen Early",
-    label_ar: "استمع مبكرًا",
-    image: "./Photo/16.jpg",
-    tip_en: "Your body whispers before it speaks—listen early.",
-    tip_ar: "جسمك يهمس قبل أن يصرخ — استمع مبكرًا.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Essential Care",
-    label_ar: "العناية الضرورية",
-    image: "./Photo/17.jpg",
-    tip_en: "Taking care is not extra—it’s essential.",
-    tip_ar: "العناية ليست رفاهية — بل ضرورة.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Soft Habits",
-    label_ar: "عادات لطيفة",
-    image: "./Photo/18.jpg",
-    tip_en: "Soft habits, strong results.",
-    tip_ar: "عادات بسيطة… نتائج قوية.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Invest in Health",
-    label_ar: "استثمر في صحتك",
-    image: "./Photo/19.jpg",
-    tip_en: "Invest in your health—it always pays back.",
-    tip_ar: "استثمر في صحتك — العائد مضمون.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "True Signature",
-    label_ar: "توقيعك الحقيقي",
-    image: "./Photo/20.jpg",
-    tip_en: "Your wellbeing is your true signature.",
-    tip_ar: "صحتك هي توقيعك الحقيقي.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Healthy Rhythm",
-    label_ar: "إيقاع صحي",
-    image: "./Photo/21.jpg",
-    tip_en: "A healthy rhythm creates a beautiful life.",
-    tip_ar: "الإيقاع الصحي يصنع حياة جميلة.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Care Today",
-    label_ar: "اعتنِ اليوم",
-    image: "./Photo/22.jpg",
-    tip_en: "Care today. Shine tomorrow.",
-    tip_ar: "اعتنِ اليوم… لتتألق غدًا.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Deserve Better",
-    label_ar: "تستحق الأفضل",
-    image: "./Photo/23.jpg",
-    tip_en: "You deserve a life that feels as good as it looks.",
-    tip_ar: "تستحق حياة تشعر بجمالها كما تراها.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Calm Choices",
-    label_ar: "اختيارات هادئة",
-    image: "./Photo/24.jpg",
-    tip_en: "Calm choices build powerful futures.",
-    tip_ar: "الاختيارات الهادئة تبني مستقبلًا قويًا.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "New Luxury",
-    label_ar: "الفخامة الجديدة",
-    image: "./Photo/25.jpg",
-    tip_en: "Health is the new luxury—and it’s yours.",
-    tip_ar: "الصحة هي الفخامة الجديدة — وهي لك.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Beautiful Habit",
-    label_ar: "أجمل عادة",
-    image: "./Photo/26.jpg",
-    tip_en: "The most beautiful habit is self-care.",
-    tip_ar: "أجمل عادة هي العناية بالنفس.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Elegant Journey",
-    label_ar: "رحلة أنيقة",
-    image: "./Photo/27.jpg",
-    tip_en: "Your health journey deserves elegance.",
-    tip_ar: "رحلتك الصحية تستحق الأناقة.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Strong Hearts",
-    label_ar: "قلوب قوية",
-    image: "./Photo/28.jpg",
-    tip_en: "Strong hearts are built quietly, daily.",
-    tip_ar: "القلوب القوية تُبنى بهدوء… يومًا بعد يوم.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Priority",
-    label_ar: "الأولوية",
-    image: "./Photo/29.jpg",
-    tip_en: "Make your wellbeing your priority, not your option.",
-    tip_ar: "اجعل صحتك أولوية لا خيارًا.",
-    winner: false
-  },
-  {
-    id: cryptoRandomId(),
-    label_en: "Peaceful Life",
-    label_ar: "حياة هادئة",
-    image: "./Photo/30.jpg",
-    tip_en: "A peaceful life begins with a healthy heart.",
-    tip_ar: "الحياة الهادئة تبدأ بقلب صحي.",
-    winner: false
-  }
-];
+    function cryptoRandomId() {
+      return "id-" + Math.random().toString(36).slice(2, 10);
+    }
+
+    let items = JSON.parse(localStorage.getItem("sufana_wheel_items") || "null") || [
+      {
+        id: cryptoRandomId(),
+        label_en: "Quiet Luxury",
+        label_ar: "فخامة هادئة",
+        image: "./Photo/1.jpg",
+        tip_en: "True luxury is a calm mind and a healthy heart.",
+        tip_ar: "الفخامة الحقيقية هي راحة البال وصحة القلب.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Health Value",
+        label_ar: "قيمة الصحة",
+        image: "./Photo/2.jpg",
+        tip_en: "Your health is the most valuable thing you own—treat it that way.",
+        tip_ar: "صحتك هي أغلى ما تملك — عاملها كذلك.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Moment of Care",
+        label_ar: "لحظة عناية",
+        image: "./Photo/3.jpg",
+        tip_en: "A quiet moment of care can change everything.",
+        tip_ar: "لحظة هادئة من العناية قد تغير كل شيء.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Elegant Care",
+        label_ar: "أناقة العناية",
+        image: "./Photo/4.jpg",
+        tip_en: "Elegance begins with taking care of yourself.",
+        tip_ar: "الأناقة تبدأ من العناية بنفسك.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Future Self",
+        label_ar: "مستقبلك الصحي",
+        image: "./Photo/5.jpg",
+        tip_en: "Your future self is built by today’s small choices.",
+        tip_ar: "مستقبلك الصحي يُبنى باختياراتك الصغيرة اليوم.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Peace of Mind",
+        label_ar: "راحة البال",
+        image: "./Photo/6.jpg",
+        tip_en: "Peace of mind starts with knowing your numbers.",
+        tip_ar: "راحة البال تبدأ بمعرفة قراءاتك.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Wellness Lifestyle",
+        label_ar: "أسلوب العافية",
+        image: "./Photo/7.jpg",
+        tip_en: "Wellness is not a trend—it’s a lifestyle.",
+        tip_ar: "العافية ليست موضة — بل أسلوب حياة.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Balanced Life",
+        label_ar: "حياة متوازنة",
+        image: "./Photo/8.jpg",
+        tip_en: "A balanced life is the ultimate form of success.",
+        tip_ar: "الحياة المتوازنة هي أعلى درجات النجاح.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "You Matter",
+        label_ar: "أنت مهم",
+        image: "./Photo/9.jpg",
+        tip_en: "Take care of yourself—no one can replace you.",
+        tip_ar: "اعتنِ بنفسك — لا أحد يمكنه أن يحل مكانك.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Silent Luxury",
+        label_ar: "الفخامة الصامتة",
+        image: "./Photo/10.jpg",
+        tip_en: "Health is the silent luxury behind every beautiful life.",
+        tip_ar: "الصحة هي الفخامة الصامتة خلف كل حياة جميلة.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Softness",
+        label_ar: "اللطف والهدوء",
+        image: "./Photo/11.jpg",
+        tip_en: "Slow down. Your heart deserves softness.",
+        tip_ar: "اهدأ… قلبك يستحق اللطف.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Refined Habit",
+        label_ar: "عادة راقية",
+        image: "./Photo/12.jpg",
+        tip_en: "Caring for yourself is the most refined habit.",
+        tip_ar: "العناية بنفسك هي أرقى عادة.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Healthy Identity",
+        label_ar: "هوية صحية",
+        image: "./Photo/13.jpg",
+        tip_en: "Your routine is your identity—make it healthy.",
+        tip_ar: "روتينك هو هويتك — اجعله صحيًا.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Luxury Control",
+        label_ar: "ترف التحكم",
+        image: "./Photo/14.jpg",
+        tip_en: "Luxury is having control over your wellbeing.",
+        tip_ar: "الفخامة هي أن تتحكم في صحتك.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Calm Heart",
+        label_ar: "قلب هادئ",
+        image: "./Photo/15.jpg",
+        tip_en: "A calm heart creates a powerful life.",
+        tip_ar: "القلب الهادئ يصنع حياة قوية.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Listen Early",
+        label_ar: "استمع مبكرًا",
+        image: "./Photo/16.jpg",
+        tip_en: "Your body whispers before it speaks—listen early.",
+        tip_ar: "جسمك يهمس قبل أن يصرخ — استمع مبكرًا.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Essential Care",
+        label_ar: "العناية الضرورية",
+        image: "./Photo/17.jpg",
+        tip_en: "Taking care is not extra—it’s essential.",
+        tip_ar: "العناية ليست رفاهية — بل ضرورة.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Soft Habits",
+        label_ar: "عادات لطيفة",
+        image: "./Photo/18.jpg",
+        tip_en: "Soft habits, strong results.",
+        tip_ar: "عادات بسيطة… نتائج قوية.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Invest in Health",
+        label_ar: "استثمر في صحتك",
+        image: "./Photo/19.jpg",
+        tip_en: "Invest in your health—it always pays back.",
+        tip_ar: "استثمر في صحتك — العائد مضمون.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "True Signature",
+        label_ar: "توقيعك الحقيقي",
+        image: "./Photo/20.jpg",
+        tip_en: "Your wellbeing is your true signature.",
+        tip_ar: "صحتك هي توقيعك الحقيقي.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Healthy Rhythm",
+        label_ar: "إيقاع صحي",
+        image: "./Photo/21.jpg",
+        tip_en: "A healthy rhythm creates a beautiful life.",
+        tip_ar: "الإيقاع الصحي يصنع حياة جميلة.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Care Today",
+        label_ar: "اعتنِ اليوم",
+        image: "./Photo/22.jpg",
+        tip_en: "Care today. Shine tomorrow.",
+        tip_ar: "اعتنِ اليوم… لتتألق غدًا.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Deserve Better",
+        label_ar: "تستحق الأفضل",
+        image: "./Photo/23.jpg",
+        tip_en: "You deserve a life that feels as good as it looks.",
+        tip_ar: "تستحق حياة تشعر بجمالها كما تراها.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Calm Choices",
+        label_ar: "اختيارات هادئة",
+        image: "./Photo/24.jpg",
+        tip_en: "Calm choices build powerful futures.",
+        tip_ar: "الاختيارات الهادئة تبني مستقبلًا قويًا.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "New Luxury",
+        label_ar: "الفخامة الجديدة",
+        image: "./Photo/25.jpg",
+        tip_en: "Health is the new luxury—and it’s yours.",
+        tip_ar: "الصحة هي الفخامة الجديدة — وهي لك.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Beautiful Habit",
+        label_ar: "أجمل عادة",
+        image: "./Photo/26.jpg",
+        tip_en: "The most beautiful habit is self-care.",
+        tip_ar: "أجمل عادة هي العناية بالنفس.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Elegant Journey",
+        label_ar: "رحلة أنيقة",
+        image: "./Photo/27.jpg",
+        tip_en: "Your health journey deserves elegance.",
+        tip_ar: "رحلتك الصحية تستحق الأناقة.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Strong Hearts",
+        label_ar: "قلوب قوية",
+        image: "./Photo/28.jpg",
+        tip_en: "Strong hearts are built quietly, daily.",
+        tip_ar: "القلوب القوية تُبنى بهدوء… يومًا بعد يوم.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Priority",
+        label_ar: "الأولوية",
+        image: "./Photo/29.jpg",
+        tip_en: "Make your wellbeing your priority, not your option.",
+        tip_ar: "اجعل صحتك أولوية لا خيارًا.",
+        winner: false
+      },
+      {
+        id: cryptoRandomId(),
+        label_en: "Peaceful Life",
+        label_ar: "حياة هادئة",
+        image: "./Photo/30.jpg",
+        tip_en: "A peaceful life begins with a healthy heart.",
+        tip_ar: "الحياة الهادئة تبدأ بقلب صحي.",
+        winner: false
+      }
+    ];
+
     let loadedImages = [];
     let currentRotation = 0;
     let spinning = false;
@@ -985,10 +989,6 @@
           <text x="80" y="110" font-family="Arial, sans-serif" font-size="18" font-weight="600" text-anchor="middle" fill="url(#g)">Smart Care</text>
         </svg>
       `);
-
-    function cryptoRandomId() {
-      return "id-" + Math.random().toString(36).slice(2, 10);
-    }
 
     function t(key) {
       return translations[currentLang][key];
@@ -1131,9 +1131,11 @@
       return Promise.all(
         items.map((item) => new Promise((resolve) => {
           const img = new Image();
-          img.crossOrigin = "anonymous";
           img.onload = () => resolve({ ok: true, img });
-          img.onerror = () => resolve({ ok: false, img: null });
+          img.onerror = () => {
+            console.log("Failed image:", item.image);
+            resolve({ ok: false, img: null });
+          };
           img.src = item.image;
         }))
       );
@@ -1438,19 +1440,8 @@
       drawWheel();
     }
 
-imageUpload.addEventListener("change", async (event) => {
-  alert("Upload is disabled in live site. Use images from Photo folder.");
-  event.target.value = "";
-});
-          tip_en: "Take a mindful moment to check in with your health today.",
-          tip_ar: "خذ لحظة واعية اليوم للاطمئنان على صحتك.",
-          winner: false
-        };
-      });
-
-      currentRotation = 0;
-      saveItems();
-      await reloadAndDraw();
+    imageUpload.addEventListener("change", async (event) => {
+      alert("Upload is disabled in live site. Use images from Photo folder.");
       event.target.value = "";
     });
 
