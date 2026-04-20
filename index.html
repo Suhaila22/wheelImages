@@ -219,8 +219,6 @@
     }));
 
     let items = JSON.parse(localStorage.getItem("sufana_wheel_items") || "null") || defaultItems;
-    window.items = items;
-
     let loadedImages = [];
     let currentRotation = 0;
     let spinning = false;
@@ -255,8 +253,6 @@
     const clickCount = document.getElementById("clickCount");
 
     const winnerPopup = document.getElementById("winnerPopup");
-    const popupTitle = document.getElementById("popupTitle");
-    const popupSubtitle = document.getElementById("popupSubtitle");
     const popupImg = document.getElementById("popupImg");
     const popupText = document.getElementById("popupText");
     const popupTip = document.getElementById("popupTip");
@@ -283,15 +279,13 @@
 
       document.getElementById("winnerCardTitle").textContent = t("winnerCardTitle");
       document.getElementById("tipLabel").textContent = t("tipLabel");
-
       document.getElementById("statsCardTitle").textContent = t("statsCardTitle");
       document.getElementById("spinCountLabel").textContent = t("spinCountLabel");
       document.getElementById("clickCountLabel").textContent = t("clickCountLabel");
-
       document.getElementById("imagesCardTitle").textContent = t("imagesCardTitle");
 
-      popupTitle.textContent = t("popupTitle");
-      popupSubtitle.textContent = t("popupSubtitle");
+      document.getElementById("popupTitle").textContent = t("popupTitle");
+      document.getElementById("popupSubtitle").textContent = t("popupSubtitle");
       document.getElementById("popupTipLabel").textContent = t("popupTipLabel");
       closePopupBtn.textContent = t("close");
 
@@ -343,100 +337,89 @@
         items.map((item) => new Promise((resolve) => {
           const img = new Image();
           img.onload = () => resolve({ ok:true, img });
-          img.onerror = () => {
-            console.log("FAILED:", item.image, new URL(item.image, location.href).href);
-            resolve({ ok:false, img:null });
-          };
+          img.onerror = () => resolve({ ok:false, img:null });
           img.src = item.image;
         }))
       );
     }
 
-    function drawWheel(rotation = currentRotation) {
-  const size = canvas.width;
-  const cx = size / 2;
-  const cy = size / 2;
-  const radius = size * 0.46;
-  const slice = (Math.PI * 2) / items.length;
+    function drawWheel(rotation = currentRotation){
+      const size = canvas.width;
+      const cx = size / 2;
+      const cy = size / 2;
+      const radius = size * 0.46;
+      const slice = (Math.PI * 2) / items.length;
 
-  ctx.clearRect(0, 0, size, size);
+      ctx.clearRect(0, 0, size, size);
 
-  for (let i = 0; i < items.length; i++) {
-    const start = rotation + i * slice - Math.PI / 2;
-    const end = start + slice;
+      for (let i = 0; i < items.length; i++) {
+        const start = rotation + i * slice - Math.PI / 2;
+        const end = start + slice;
 
-    // Draw Background Slice
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, radius, start, end);
-    ctx.closePath();
-    ctx.fillStyle = fallbackColors[i % fallbackColors.length];
-    ctx.fill();
+        // Draw slice background
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius, start, end);
+        ctx.closePath();
+        ctx.fillStyle = fallbackColors[i % fallbackColors.length];
+        ctx.fill();
 
-    // Draw Image
-    const loaded = loadedImages[i];
-    if (loaded && loaded.ok && loaded.img) {
-      ctx.save();
-      // Create a clipping path for the slice so image doesn't bleed out
+        // Draw image if loaded
+        const loaded = loadedImages[i];
+        if (loaded && loaded.ok && loaded.img) {
+            ctx.save();
+            const angle = start + slice / 2;
+            const r = radius * 0.60;
+            const ix = cx + Math.cos(angle) * r;
+            const iy = cy + Math.sin(angle) * r;
+            const thumb = 48;
+
+            ctx.translate(ix, iy);
+            ctx.rotate(angle + Math.PI / 2);
+            ctx.drawImage(loaded.img, -thumb/2, -thumb/2, thumb, thumb);
+            ctx.restore();
+        }
+
+        // Overlay for winners/borders
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius, start, end);
+        ctx.closePath();
+        ctx.fillStyle = items[i].winner ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.05)";
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255,255,255,0.8)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Label
+        const labelAngle = start + slice / 2;
+        const lr = radius * 0.82;
+        const lx = cx + Math.cos(labelAngle) * lr;
+        const ly = cy + Math.sin(labelAngle) * lr;
+
+        ctx.save();
+        ctx.translate(lx, ly);
+        ctx.rotate(labelAngle + Math.PI / 2);
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 12px Arial";
+        ctx.fillText(i + 1, 0, 0);
+        ctx.restore();
+      }
+
+      // Center logo
       ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.arc(cx, cy, radius, start, end);
-      ctx.closePath();
-      ctx.clip();
+      ctx.arc(cx, cy, size * 0.1, 0, Math.PI * 2);
+      ctx.fillStyle = "#fff";
+      ctx.fill();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = "#111827";
+      ctx.stroke();
 
-      const img = loaded.img;
-      const angle = start + slice / 2;
-      const r = radius * 0.55; // Adjusted distance from center
-      const ix = cx + Math.cos(angle) * r;
-      const iy = cy + Math.sin(angle) * r;
-
-      const thumb = 45; // Size of the image in the wheel
-      
-      ctx.translate(ix, iy);
-      ctx.rotate(angle + Math.PI / 2); // Rotates image to face center
-      
-      // Draw centered image
-      ctx.drawImage(img, -thumb / 2, -thumb / 2, thumb, thumb);
-      ctx.restore();
-    }
-
-    // Draw Slice Borders
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, radius, start, end);
-    ctx.closePath();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgba(255,255,255,0.5)";
-    ctx.stroke();
-
-    // Draw Labels (Numbers)
-    const labelAngle = start + slice / 2;
-    const lr = radius * 0.85;
-    const lx = cx + Math.cos(labelAngle) * lr;
-    const ly = cy + Math.sin(labelAngle) * lr;
-
-    ctx.save();
-    ctx.translate(lx, ly);
-    ctx.rotate(labelAngle + Math.PI / 2);
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#fff";
-    ctx.font = "bold 10px Arial";
-    ctx.fillText(i + 1, 0, 0);
-    ctx.restore();
-  }
-
-  // Draw Center Decorative Circle
-  ctx.beginPath();
-  ctx.arc(cx, cy, size * 0.1, 0, Math.PI * 2);
-  ctx.fillStyle = "#fff";
-  ctx.fill();
-  ctx.strokeStyle = "#111827";
-  ctx.lineWidth = 4;
-  ctx.stroke();
-}
-
-    function getWheelIndexForItem(itemId){
-      return items.findIndex(item => item.id === itemId);
+      ctx.fillStyle = "#5b87a8";
+      ctx.font = "bold 14px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText("SUFANA", cx, cy - 2);
     }
 
     function computeTargetRotationForIndex(index){
@@ -464,38 +447,26 @@
       winnerTip.textContent = getItemTip(item);
       winnerTipBox.style.display = "block";
 
-      popupTitle.textContent = t("popupTitle");
-      popupSubtitle.textContent = t("popupSubtitle");
       popupImg.src = item.image;
       popupText.textContent = getItemLabel(item);
       popupTip.textContent = getItemTip(item);
       winnerPopup.classList.add("active");
     }
 
-    function closePopup(){
-      winnerPopup.classList.remove("active");
-    }
-
     function spinWheel(){
-      if (spinning || items.length < 2) return;
-
+      if (spinning) return;
       const chosen = chooseAvailableWinner();
       if (!chosen) {
         alert(t("allWinnersUsed"));
         return;
       }
 
-      const winnerIndex = getWheelIndexForItem(chosen.id);
-      if (winnerIndex < 0) return;
-
+      const winnerIndex = items.findIndex(x => x.id === chosen.id);
       spinning = true;
       spinBtn.disabled = true;
-      winnerText.innerHTML = `<strong>${t("winner")}:</strong> ${t("spinning")}`;
-      winnerImage.style.display = "none";
-      winnerTipBox.style.display = "none";
 
       const duration = 4500;
-      const extraTurns = 7;
+      const extraTurns = 8;
       const baseTarget = computeTargetRotationForIndex(winnerIndex);
       const currentNorm = normalizeRotation(currentRotation);
       let delta = baseTarget - currentNorm;
@@ -518,72 +489,44 @@
         } else {
           chosen.winner = true;
           saveItems();
-
           stats.totalSpins += 1;
-          stats.history.push({
-            id: chosen.id,
-            label_en: chosen.label_en,
-            label_ar: chosen.label_ar,
-            timestamp: new Date().toISOString()
-          });
           saveStats();
           updateStatsUI();
-
           createImageList();
-          drawWheel(currentRotation);
           showWinner(chosen);
-
           spinning = false;
           spinBtn.disabled = false;
         }
       }
-
       requestAnimationFrame(animate);
     }
 
-    async function reloadAndDraw(){
-      loadedImages = await loadImages();
-      console.log("LoadedImages:", loadedImages);
+    langBtn.addEventListener("click", () => {
+      currentLang = currentLang === "en" ? "ar" : "en";
+      localStorage.setItem("sufana_lang", currentLang);
+      updateTexts();
       drawWheel();
-    }
+    });
 
     spinBtn.addEventListener("click", spinWheel);
-    redrawBtn.addEventListener("click", () => drawWheel(currentRotation));
-
+    redrawBtn.addEventListener("click", () => drawWheel());
+    closePopupBtn.addEventListener("click", () => winnerPopup.classList.remove("active"));
+    
     resetWinnersBtn.addEventListener("click", async () => {
-      items = items.map(item => ({ ...item, winner:false }));
-      window.items = items;
+      items = items.map(item => ({ ...item, winner: false }));
       saveItems();
-      await reloadAndDraw();
+      updateTexts();
+      drawWheel();
       alert(t("winnersReset"));
     });
 
-    resetStatsBtn.addEventListener("click", () => {
-      stats.totalSpins = 0;
-      stats.pageOpens = 0;
-      stats.history = [];
-      saveStats();
-      updateStatsUI();
-      alert(t("statsReset"));
-    });
-
-    closePopupBtn.addEventListener("click", closePopup);
-    winnerPopup.addEventListener("click", (event) => {
-      if (event.target === winnerPopup) closePopup();
-    });
-
-    langBtn.addEventListener("click", () => {
-      currentLang = currentLang === "en" ? "ar" : "en";
-      updateTexts();
-      drawWheel(currentRotation);
-    });
-
     async function init(){
-      loadedImages = await loadImages(); 
-  drawWheel();
-}
+      updateTexts();
+      loadedImages = await loadImages();
+      drawWheel();
+    }
 
-   init();
+    init();
   </script>
 </body>
 </html>
