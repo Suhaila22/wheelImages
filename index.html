@@ -1,59 +1,601 @@
-Style: cinematic healthcare advertisement, soft emotional realism, shallow depth of field, warm–cool balanced lighting, premium commercial look.
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SUFANA Smart Care Giveaway Wheel</title>
+  <style>
+    :root{
+      --bg:#eef2f7;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --primary:#0f172a;
+      --secondary:#1d4ed8;
+      --danger:#ef4444;
+      --shadow:0 14px 36px rgba(0,0,0,.12);
+      --radius:18px;
+      --wheel-size:min(88vw,560px);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+    body[dir="rtl"]{direction:rtl}
+    .app{max-width:1280px;margin:0 auto;padding:20px;display:grid;grid-template-columns:1fr 390px;gap:20px;min-height:100vh}
+    .panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+    .wheel-panel{display:flex;flex-direction:column;align-items:center;gap:14px}
+    .title-row{width:100%;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .title-row h1{margin:0 0 6px;font-size:24px}
+    .subtitle{color:var(--muted);font-size:14px;line-height:1.5}
+    .top-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .pointer{
+      width:0;height:0;
+      border-left:18px solid transparent;
+      border-right:18px solid transparent;
+      border-top:32px solid var(--danger);
+      margin-bottom:-8px;
+      z-index:3;
+      filter:drop-shadow(0 3px 4px rgba(0,0,0,.22));
+    }
+    .canvas-wrap{width:var(--wheel-size);height:var(--wheel-size);position:relative}
+    canvas{width:100%;height:100%;display:block;border-radius:50%;background:#fff;box-shadow:0 20px 50px rgba(0,0,0,.22)}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%}
+    button{
+      border:none;border-radius:12px;padding:12px 16px;font-size:14px;font-weight:700;cursor:pointer;min-height:44px
+    }
+    .primary{background:var(--primary);color:#fff}
+    .secondary{background:#e5e7eb;color:var(--text)}
+    .danger{background:#fee2e2;color:#991b1b}
+    .sidebar{display:flex;flex-direction:column;gap:16px}
+    .card-title{margin:0 0 12px;font-size:20px}
+    .winner-box,.stats-box,.settings-box{padding:14px;border-radius:14px;background:#f8fafc;border:1px solid #e5e7eb}
+    .winner-box img{width:100%;max-height:220px;object-fit:cover;border-radius:12px;margin-top:12px;box-shadow:0 8px 24px rgba(0,0,0,.14)}
+    .tip-box{margin-top:12px;padding:12px;border-radius:12px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;font-size:14px;line-height:1.5}
+    .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .stat{padding:12px;border-radius:12px;background:#fff;border:1px solid #e5e7eb;text-align:center}
+    .stat .value{font-size:22px;font-weight:700}
+    .stat .label{font-size:12px;color:var(--muted);margin-top:4px}
+    .list{display:grid;gap:10px;max-height:420px;overflow:auto;padding-right:4px}
+    .item{display:grid;grid-template-columns:58px 1fr;gap:12px;align-items:center;padding:8px;border-radius:12px;background:#f9fafb;border:1px solid #e5e7eb}
+    .item img{width:58px;height:58px;object-fit:cover;border-radius:10px;background:#ddd}
+    .item .name{font-size:14px;font-weight:700}
+    .item .meta{font-size:12px;color:var(--muted);word-break:break-word;margin-top:3px}
+    .badge{display:inline-block;margin-top:5px;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700;background:#dcfce7;color:#166534}
+    .popup{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;z-index:10000;padding:18px}
+    .popup.active{display:flex}
+    .popup-card{width:min(92vw,420px);background:#fff;border-radius:20px;padding:20px;box-shadow:0 24px 50px rgba(0,0,0,.28);text-align:center}
+    .popup-card img{width:100%;max-height:240px;object-fit:cover;border-radius:14px;margin:14px 0}
+    .popup-title{font-size:24px;font-weight:700;margin:0}
+    .popup-subtitle{color:var(--muted);font-size:14px;margin-top:6px}
+    .popup-tip{margin-top:12px;padding:12px;border-radius:12px;background:#eff6ff;color:#1e3a8a;font-size:14px;line-height:1.5}
+    @media (max-width:980px){.app{grid-template-columns:1fr}.list{max-height:none}}
+  </style>
+</head>
+<body lang="en" dir="ltr">
+  <div class="app">
+    <div class="panel wheel-panel">
+      <div class="title-row">
+        <div>
+          <h1 id="appTitle">SUFANA Smart Care Giveaway Wheel</h1>
+          <div class="subtitle" id="appSubtitle">Spin the wheel, choose a winner automatically, and reveal a health tip with every result.</div>
+        </div>
+        <div class="top-actions">
+          <button id="langBtn" class="secondary">AR</button>
+        </div>
+      </div>
 
-Format:
-Duration: 10 seconds
-Editing: 4-shot sequence with smooth cinematic cuts
-Color grade: soft clinical blues with warm highlights (skin tones + card accents)
-Mood: heartfelt, appreciative, calm
+      <div class="pointer"></div>
+      <div class="canvas-wrap">
+        <canvas id="wheel" width="560" height="560"></canvas>
+      </div>
 
----
+      <div class="controls">
+        <button id="spinBtn" class="primary">Spin Wheel</button>
+        <button id="redrawBtn" class="secondary">Redraw</button>
+        <button id="resetWinnersBtn" class="secondary">Reset Winners</button>
+        <button id="resetStatsBtn" class="danger">Reset Stats</button>
+      </div>
+    </div>
 
-SHOT 1 — “Quiet Care”
-Camera: close-up, slow lateral slide
-Scene: A stethoscope rests on a clean desk beside a keyboard and medicine pack.
-Lighting: soft window light from left, cool tones
-Action: subtle movement of curtain light shifting across surface
-Purpose: establish healthcare environment and calm tone
+    <div class="sidebar">
+      <div class="panel">
+        <h2 class="card-title" id="winnerCardTitle">Winner</h2>
+        <div class="winner-box">
+          <div id="winnerText"><strong>Winner:</strong> None yet</div>
+          <img id="winnerImage" alt="Winner preview" style="display:none;" />
+          <div class="tip-box" id="winnerTipBox" style="display:none;">
+            <strong id="tipLabel">Health Tip:</strong>
+            <div id="winnerTip" style="margin-top:6px;"></div>
+          </div>
+        </div>
+      </div>
 
----
+      <div class="panel">
+        <h2 class="card-title" id="statsCardTitle">Tracking</h2>
+        <div class="stats-box">
+          <div class="stats-grid">
+            <div class="stat">
+              <div class="value" id="spinCount">0</div>
+              <div class="label" id="spinCountLabel">Total Spins</div>
+            </div>
+            <div class="stat">
+              <div class="value" id="clickCount">0</div>
+              <div class="label" id="clickCountLabel">Page Opens</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-SHOT 2 — “The Gesture”
-Camera: medium close-up, slight angle from right
-Scene: A nurse’s hand gently places a floral card upright against a colorful blood pressure log book (used as a stand)
-Details: card reads “I am so thankful for you!”
-Lighting: warm highlight falls across the card, background softly blurred
-Action: hand pauses briefly, conveying intention and care
-Purpose: introduce emotional focal point
+      <div class="panel">
+        <h2 class="card-title" id="imagesCardTitle">Wheel Items</h2>
+        <div class="list" id="imageList"></div>
+      </div>
+    </div>
+  </div>
 
----
+  <div class="popup" id="winnerPopup">
+    <div class="popup-card">
+      <h3 class="popup-title" id="popupTitle">Winner</h3>
+      <div class="popup-subtitle" id="popupSubtitle">Congratulations</div>
+      <img id="popupImg" alt="Winner image" />
+      <div id="popupText" style="font-size:18px;font-weight:700;"></div>
+      <div class="popup-tip">
+        <strong id="popupTipLabel">Health Tip</strong>
+        <div id="popupTip" style="margin-top:6px;"></div>
+      </div>
+      <div style="margin-top:16px;">
+        <button id="closePopupBtn" class="primary">Close</button>
+      </div>
+    </div>
+  </div>
 
-SHOT 3 — “The Message”
-Camera: macro close-up on pen tip
-Depth of field: very shallow
-Action:
-- A sleek black pen lifts slightly
-- Touches the card
-- Writes in smooth cursive: “Your care means everything.”
-Ink appears in real time
-Lighting: soft glow on ink, gentle reflections
-Purpose: emotional peak, message delivery
+  <script>
+    const translations = {
+      en: {
+        appTitle: "SUFANA Smart Care Giveaway Wheel",
+        appSubtitle: "Spin the wheel, choose a winner automatically, and reveal a health tip with every result.",
+        spinWheel: "Spin Wheel",
+        redraw: "Redraw",
+        resetWinners: "Reset Winners",
+        resetStats: "Reset Stats",
+        winnerCardTitle: "Winner",
+        winner: "Winner",
+        noneYet: "None yet",
+        tipLabel: "Health Tip:",
+        statsCardTitle: "Tracking",
+        spinCountLabel: "Total Spins",
+        clickCountLabel: "Page Opens",
+        imagesCardTitle: "Wheel Items",
+        alreadyWon: "Already won",
+        popupTitle: "Winner",
+        popupSubtitle: "Congratulations",
+        popupTipLabel: "Health Tip",
+        close: "Close",
+        spinning: "Spinning...",
+        allWinnersUsed: "All items have already won. Reset winners to spin again.",
+        winnersReset: "Winners have been reset.",
+        statsReset: "Tracking data has been reset."
+      },
+      ar: {
+        appTitle: "عجلة سُفانا سمارت كير",
+        appSubtitle: "أدر العجلة، اختر فائزًا تلقائيًا، واعرض نصيحة صحية مع كل نتيجة.",
+        spinWheel: "ابدأ الدوران",
+        redraw: "إعادة الرسم",
+        resetWinners: "إعادة الفائزين",
+        resetStats: "إعادة الإحصاءات",
+        winnerCardTitle: "الفائز",
+        winner: "الفائز",
+        noneYet: "لا يوجد بعد",
+        tipLabel: "نصيحة صحية:",
+        statsCardTitle: "التتبع",
+        spinCountLabel: "إجمالي الدوران",
+        clickCountLabel: "مرات فتح الصفحة",
+        imagesCardTitle: "عناصر العجلة",
+        alreadyWon: "فاز سابقًا",
+        popupTitle: "الفائز",
+        popupSubtitle: "تهانينا",
+        popupTipLabel: "نصيحة صحية",
+        close: "إغلاق",
+        spinning: "جارٍ الدوران...",
+        allWinnersUsed: "كل العناصر فازت مسبقًا. أعِد تعيين الفائزين لتدور مرة أخرى.",
+        winnersReset: "تمت إعادة تعيين الفائزين.",
+        statsReset: "تمت إعادة تعيين بيانات التتبع."
+      }
+    };
 
----
+    let currentLang = localStorage.getItem("sufana_lang") || "en";
 
-SHOT 4 — “Hold & Feel”
-Camera: slow push-in, centered framing
-Scene: full card visible, message complete
-Background: blurred medical tools
-Lighting: warm glow on card, soft vignette
-Action: stillness, slight ambient motion (light flicker or dust particles)
-Purpose: reinforce message, leave lasting impression
+    function cryptoRandomId() {
+      return "id-" + Math.random().toString(36).slice(2, 10);
+    }
 
----
+    const defaultItems = Array.from({ length: 30 }, (_, i) => ({
+      id: cryptoRandomId(),
+      label_en: String(i + 1),
+      label_ar: String(i + 1),
+      image: `./Photo/${i + 1}.jpg`,
+      tip_en: `Health tip for image ${i + 1}.`,
+      tip_ar: `نصيحة صحية للصورة ${i + 1}.`,
+      winner: false
+    }));
 
-Sound Design:
-- Soft ambient clinic hum
-- Subtle pen writing sound
-- Faint airy tone or piano note (minimal, emotional)
+    let items = JSON.parse(localStorage.getItem("sufana_wheel_items") || "null") || defaultItems;
+    window.items = items;
 
-End Frame:
-Card centered: “I am so thankful for you! … Your care means everything.”
+    let loadedImages = [];
+    let currentRotation = 0;
+    let spinning = false;
+
+    const statsKey = "sufana_wheel_stats";
+    const stats = JSON.parse(localStorage.getItem(statsKey) || "null") || {
+      pageOpens: 0,
+      totalSpins: 0,
+      history: []
+    };
+    stats.pageOpens += 1;
+    saveStats();
+
+    const fallbackColors = ["#0f172a","#1e293b","#334155","#1d4ed8","#2563eb","#3b82f6","#60a5fa","#93c5fd"];
+
+    const canvas = document.getElementById("wheel");
+    const ctx = canvas.getContext("2d");
+
+    const spinBtn = document.getElementById("spinBtn");
+    const redrawBtn = document.getElementById("redrawBtn");
+    const resetWinnersBtn = document.getElementById("resetWinnersBtn");
+    const resetStatsBtn = document.getElementById("resetStatsBtn");
+    const langBtn = document.getElementById("langBtn");
+
+    const winnerText = document.getElementById("winnerText");
+    const winnerImage = document.getElementById("winnerImage");
+    const winnerTipBox = document.getElementById("winnerTipBox");
+    const winnerTip = document.getElementById("winnerTip");
+    const imageList = document.getElementById("imageList");
+
+    const spinCount = document.getElementById("spinCount");
+    const clickCount = document.getElementById("clickCount");
+
+    const winnerPopup = document.getElementById("winnerPopup");
+    const popupTitle = document.getElementById("popupTitle");
+    const popupSubtitle = document.getElementById("popupSubtitle");
+    const popupImg = document.getElementById("popupImg");
+    const popupText = document.getElementById("popupText");
+    const popupTip = document.getElementById("popupTip");
+    const closePopupBtn = document.getElementById("closePopupBtn");
+
+    function t(key){ return translations[currentLang][key]; }
+    function getItemLabel(item){ return currentLang === "ar" ? item.label_ar : item.label_en; }
+    function getItemTip(item){ return currentLang === "ar" ? item.tip_ar : item.tip_en; }
+
+    function saveItems(){ localStorage.setItem("sufana_wheel_items", JSON.stringify(items)); }
+    function saveStats(){ localStorage.setItem(statsKey, JSON.stringify(stats)); }
+
+    function updateTexts(){
+      document.documentElement.lang = currentLang;
+      document.body.setAttribute("lang", currentLang);
+      document.body.setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
+
+      document.getElementById("appTitle").textContent = t("appTitle");
+      document.getElementById("appSubtitle").textContent = t("appSubtitle");
+      spinBtn.textContent = t("spinWheel");
+      redrawBtn.textContent = t("redraw");
+      resetWinnersBtn.textContent = t("resetWinners");
+      resetStatsBtn.textContent = t("resetStats");
+
+      document.getElementById("winnerCardTitle").textContent = t("winnerCardTitle");
+      document.getElementById("tipLabel").textContent = t("tipLabel");
+
+      document.getElementById("statsCardTitle").textContent = t("statsCardTitle");
+      document.getElementById("spinCountLabel").textContent = t("spinCountLabel");
+      document.getElementById("clickCountLabel").textContent = t("clickCountLabel");
+
+      document.getElementById("imagesCardTitle").textContent = t("imagesCardTitle");
+
+      popupTitle.textContent = t("popupTitle");
+      popupSubtitle.textContent = t("popupSubtitle");
+      document.getElementById("popupTipLabel").textContent = t("popupTipLabel");
+      closePopupBtn.textContent = t("close");
+
+      langBtn.textContent = currentLang === "en" ? "AR" : "EN";
+
+      updateWinnerPanelTexts();
+      createImageList();
+      updateStatsUI();
+    }
+
+    function updateWinnerPanelTexts(){
+      const currentWinnerId = winnerText.dataset.winnerId;
+      if (!currentWinnerId) {
+        winnerText.innerHTML = `<strong>${t("winner")}:</strong> ${t("noneYet")}`;
+        winnerTipBox.style.display = "none";
+        return;
+      }
+      const item = items.find(x => x.id === currentWinnerId);
+      if (!item) return;
+      winnerText.innerHTML = `<strong>${t("winner")}:</strong> ${getItemLabel(item)}`;
+      winnerTip.textContent = getItemTip(item);
+      winnerTipBox.style.display = "block";
+    }
+
+    function updateStatsUI(){
+      spinCount.textContent = stats.totalSpins;
+      clickCount.textContent = stats.pageOpens;
+    }
+
+    function createImageList(){
+      imageList.innerHTML = "";
+      items.forEach((item) => {
+        const row = document.createElement("div");
+        row.className = "item";
+        row.innerHTML = `
+          <img src="${item.image}" alt="${getItemLabel(item)}">
+          <div>
+            <div class="name">${getItemLabel(item)}</div>
+            <div class="meta">${item.image}</div>
+            ${item.winner ? `<span class="badge">${t("alreadyWon")}</span>` : ""}
+          </div>
+        `;
+        imageList.appendChild(row);
+      });
+    }
+
+    function loadImages(){
+      return Promise.all(
+        items.map((item) => new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve({ ok:true, img });
+          img.onerror = () => {
+            console.log("FAILED:", item.image, new URL(item.image, location.href).href);
+            resolve({ ok:false, img:null });
+          };
+          img.src = item.image;
+        }))
+      );
+    }
+
+    function drawWheel(rotation = currentRotation){
+      const size = canvas.width;
+      const cx = size / 2;
+      const cy = size / 2;
+      const radius = size * 0.46;
+      const slice = (Math.PI * 2) / items.length;
+
+      ctx.clearRect(0, 0, size, size);
+
+      for (let i = 0; i < items.length; i++) {
+        const start = rotation + i * slice - Math.PI / 2;
+        const end = start + slice;
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius, start, end);
+        ctx.closePath();
+        ctx.fillStyle = fallbackColors[i % fallbackColors.length];
+        ctx.fill();
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius, start, end);
+        ctx.closePath();
+        ctx.clip();
+
+        const loaded = loadedImages[i];
+        if (loaded && loaded.ok && loaded.img) {
+          const img = loaded.img;
+          const angle = start + slice / 2;
+          const r = radius * 0.62;
+          const ix = cx + Math.cos(angle) * r;
+          const iy = cy + Math.sin(angle) * r;
+
+          const thumb = 52;
+          const side = Math.min(img.width, img.height);
+          const sx = (img.width - side) / 2;
+          const sy = (img.height - side) / 2;
+
+          ctx.drawImage(img, sx, sy, side, side, ix - thumb / 2, iy - thumb / 2, thumb, thumb);
+        }
+
+        ctx.restore();
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius, start, end);
+        ctx.closePath();
+        ctx.fillStyle = items[i].winner ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.08)";
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius, start, end);
+        ctx.closePath();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "rgba(255,255,255,0.95)";
+        ctx.stroke();
+
+        const labelAngle = start + slice / 2;
+        const lr = radius * 0.8;
+        const lx = cx + Math.cos(labelAngle) * lr;
+        const ly = cy + Math.sin(labelAngle) * lr;
+
+        ctx.save();
+        ctx.translate(lx, ly);
+        ctx.rotate(labelAngle + Math.PI / 2);
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#111827";
+        ctx.strokeStyle = "rgba(255,255,255,0.96)";
+        ctx.lineWidth = 4;
+        ctx.font = "bold 12px Arial";
+        const label = String(i + 1);
+        ctx.strokeText(label, 0, 0);
+        ctx.fillText(label, 0, 0);
+        ctx.restore();
+      }
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, size * 0.09, 0, Math.PI * 2);
+      ctx.fillStyle = "#ffffff";
+      ctx.fill();
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = "#111827";
+      ctx.stroke();
+
+      ctx.fillStyle = "#5b87a8";
+      ctx.font = "bold 16px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText("SUFANA", cx, cy - 4);
+      ctx.font = "12px Arial";
+      ctx.fillText("Smart Care", cx, cy + 14);
+    }
+
+    function getWheelIndexForItem(itemId){
+      return items.findIndex(item => item.id === itemId);
+    }
+
+    function computeTargetRotationForIndex(index){
+      const slice = (Math.PI * 2) / items.length;
+      const centerAngle = index * slice + slice / 2;
+      const pointerAngle = 3 * Math.PI / 2;
+      return pointerAngle - centerAngle;
+    }
+
+    function normalizeRotation(angle){
+      return ((angle % (Math.PI * 2)) + (Math.PI * 2)) % (Math.PI * 2);
+    }
+
+    function chooseAvailableWinner(){
+      const available = items.filter(item => !item.winner);
+      if (!available.length) return null;
+      return available[Math.floor(Math.random() * available.length)];
+    }
+
+    function showWinner(item){
+      winnerText.dataset.winnerId = item.id;
+      winnerText.innerHTML = `<strong>${t("winner")}:</strong> ${getItemLabel(item)}`;
+      winnerImage.src = item.image;
+      winnerImage.style.display = "block";
+      winnerTip.textContent = getItemTip(item);
+      winnerTipBox.style.display = "block";
+
+      popupTitle.textContent = t("popupTitle");
+      popupSubtitle.textContent = t("popupSubtitle");
+      popupImg.src = item.image;
+      popupText.textContent = getItemLabel(item);
+      popupTip.textContent = getItemTip(item);
+      winnerPopup.classList.add("active");
+    }
+
+    function closePopup(){
+      winnerPopup.classList.remove("active");
+    }
+
+    function spinWheel(){
+      if (spinning || items.length < 2) return;
+
+      const chosen = chooseAvailableWinner();
+      if (!chosen) {
+        alert(t("allWinnersUsed"));
+        return;
+      }
+
+      const winnerIndex = getWheelIndexForItem(chosen.id);
+      if (winnerIndex < 0) return;
+
+      spinning = true;
+      spinBtn.disabled = true;
+      winnerText.innerHTML = `<strong>${t("winner")}:</strong> ${t("spinning")}`;
+      winnerImage.style.display = "none";
+      winnerTipBox.style.display = "none";
+
+      const duration = 4500;
+      const extraTurns = 7;
+      const baseTarget = computeTargetRotationForIndex(winnerIndex);
+      const currentNorm = normalizeRotation(currentRotation);
+      let delta = baseTarget - currentNorm;
+      if (delta < 0) delta += Math.PI * 2;
+
+      const targetRotation = currentRotation + extraTurns * Math.PI * 2 + delta;
+      const initialRotation = currentRotation;
+      const startTime = performance.now();
+
+      function animate(now){
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 4);
+
+        currentRotation = initialRotation + (targetRotation - initialRotation) * eased;
+        drawWheel(currentRotation);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          chosen.winner = true;
+          saveItems();
+
+          stats.totalSpins += 1;
+          stats.history.push({
+            id: chosen.id,
+            label_en: chosen.label_en,
+            label_ar: chosen.label_ar,
+            timestamp: new Date().toISOString()
+          });
+          saveStats();
+          updateStatsUI();
+
+          createImageList();
+          drawWheel(currentRotation);
+          showWinner(chosen);
+
+          spinning = false;
+          spinBtn.disabled = false;
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    async function reloadAndDraw(){
+      loadedImages = await loadImages();
+      console.log("LoadedImages:", loadedImages);
+      drawWheel();
+    }
+
+    spinBtn.addEventListener("click", spinWheel);
+    redrawBtn.addEventListener("click", () => drawWheel(currentRotation));
+
+    resetWinnersBtn.addEventListener("click", async () => {
+      items = items.map(item => ({ ...item, winner:false }));
+      window.items = items;
+      saveItems();
+      await reloadAndDraw();
+      alert(t("winnersReset"));
+    });
+
+    resetStatsBtn.addEventListener("click", () => {
+      stats.totalSpins = 0;
+      stats.pageOpens = 0;
+      stats.history = [];
+      saveStats();
+      updateStatsUI();
+      alert(t("statsReset"));
+    });
+
+    closePopupBtn.addEventListener("click", closePopup);
+    winnerPopup.addEventListener("click", (event) => {
+      if (event.target === winnerPopup) closePopup();
+    });
+
+    langBtn.addEventListener("click", () => {
+      currentLang = currentLang === "en" ? "ar" : "en";
+      updateTexts();
+      drawWheel(currentRotation);
+    });
+
+    async function init(){
+      updateTexts();
+      await reloadAndDraw();
+    }
+
+    init();
+  </script>
+</body>
+</html>
