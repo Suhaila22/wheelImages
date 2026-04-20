@@ -3,57 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SUFANA Smart Care Giveaway Wheel</title>
+  <title>SUFANA Luxury Smart Care Wheel</title>
   <style>
     :root{
-      --bg:#eef2f7;
+      --bg:#f4f7f9;
       --card:#ffffff;
-      --text:#111827;
-      --muted:#6b7280;
+      --gold:#af905d;
+      --text:#0f172a;
+      --muted:#64748b;
       --primary:#0f172a;
-      --secondary:#1d4ed8;
       --danger:#ef4444;
-      --shadow:0 14px 36px rgba(0,0,0,.12);
-      --radius:18px;
+      --shadow:0 10px 30px rgba(0,0,0,0.08);
       --wheel-size:min(88vw,580px);
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
-    body[dir="rtl"]{direction:rtl}
-    .app{max-width:1280px;margin:0 auto;padding:20px;display:grid;grid-template-columns:1fr 390px;gap:20px;min-height:100vh}
-    .panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
-    .wheel-panel{display:flex;flex-direction:column;align-items:center;gap:14px}
-    .title-row{width:100%;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-    .title-row h1{margin:0 0 6px;font-size:24px}
-    .subtitle{color:var(--muted);font-size:14px;line-height:1.5}
+    body{margin:0;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;background:var(--bg);color:var(--text)}
+    .app{max-width:1300px;margin:0 auto;padding:20px;display:grid;grid-template-columns:1fr 400px;gap:25px;min-height:100vh}
+    .panel{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:20px}
+    .wheel-panel{display:flex;flex-direction:column;align-items:center;gap:15px}
+    .title-row{width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .title-row h1{margin:0;font-size:22px;color:var(--gold);text-transform:uppercase;letter-spacing:1px}
     .pointer{
       width:0;height:0;
-      border-left:20px solid transparent;
-      border-right:20px solid transparent;
-      border-top:35px solid var(--danger);
-      margin-bottom:-10px;
+      border-left:22px solid transparent;
+      border-right:22px solid transparent;
+      border-top:38px solid var(--gold);
+      margin-bottom:-12px;
       z-index:10;
-      filter:drop-shadow(0 3px 4px rgba(0,0,0,.3));
+      filter:drop-shadow(0 4px 5px rgba(0,0,0,0.3));
     }
     .canvas-wrap{width:var(--wheel-size);height:var(--wheel-size);position:relative}
-    canvas{width:100%;height:100%;display:block;border-radius:50%;background:#fff;box-shadow:0 20px 50px rgba(0,0,0,.25)}
-    .controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%}
-    button{border:none;border-radius:12px;padding:12px 16px;font-size:14px;font-weight:700;cursor:pointer;min-height:44px}
+    canvas{width:100%;height:100%;display:block;border-radius:50%;background:#fff;box-shadow:0 15px 45px rgba(0,0,0,0.2)}
+    .controls{display:flex;gap:12px;margin-top:20px}
+    button{border:none;border-radius:12px;padding:14px 24px;font-size:15px;font-weight:700;cursor:pointer;transition:0.3s}
     .primary{background:var(--primary);color:#fff}
-    .secondary{background:#e5e7eb;color:var(--text)}
-    .danger{background:#fee2e2;color:#991b1b}
-    .sidebar{display:flex;flex-direction:column;gap:16px}
-    .card-title{margin:0 0 12px;font-size:20px}
-    .winner-box{padding:14px;border-radius:14px;background:#f8fafc;border:1px solid #e5e7eb;text-align:center}
-    .winner-box img{width:100%;max-height:220px;object-fit:cover;border-radius:12px;margin-top:12px;box-shadow:0 8px 24px rgba(0,0,0,.14)}
-    .list{display:grid;gap:10px;max-height:450px;overflow:auto;padding-right:4px}
-    .item{display:grid;grid-template-columns:58px 1fr;gap:12px;align-items:center;padding:8px;border-radius:12px;background:#f9fafb;border:1px solid #e5e7eb}
-    .item img{width:58px;height:58px;object-fit:cover;border-radius:10px;background:#ddd}
-    .badge{display:inline-block;margin-top:5px;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700;background:#dcfce7;color:#166534}
-    .popup{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:10000;padding:18px}
+    .primary:hover{background:#1e293b;transform:translateY(-2px)}
+    .secondary{background:#e2e8f0;color:var(--text)}
+    .sidebar{display:flex;flex-direction:column;gap:20px}
+    .card-title{margin:0 0 15px;font-size:18px;border-bottom:2px solid #f1f5f9;padding-bottom:10px}
+    .winner-box{padding:20px;border-radius:15px;background:#fff;border:1px solid #e2e8f0;text-align:center}
+    .winner-box img{width:100%;max-height:200px;object-fit:cover;border-radius:12px;margin-top:15px}
+    .luxury-tip{margin-top:15px;padding:15px;background:#fcf9f5;border-left:4px solid var(--gold);font-style:italic;color:#475569;font-size:14px}
+    .list{display:grid;gap:10px;max-height:400px;overflow:auto}
+    .item{display:grid;grid-template-columns:60px 1fr;gap:15px;padding:10px;background:#f8fafc;border-radius:12px;border:1px solid #edf2f7}
+    .item img{width:60px;height:60px;object-fit:cover;border-radius:8px}
+    .popup{position:fixed;inset:0;background:rgba(15, 23, 42, 0.9);display:none;align-items:center;justify-content:center;z-index:10000}
     .popup.active{display:flex}
-    .popup-card{width:min(92vw,420px);background:#fff;border-radius:20px;padding:25px;text-align:center}
-    .popup-card img{width:100%;max-height:240px;object-fit:cover;border-radius:14px;margin:15px 0}
+    .popup-card{width:min(90vw,450px);background:#fff;border-radius:24px;padding:30px;text-align:center}
+    .popup-card img{width:100%;border-radius:15px;margin:20px 0}
     @media (max-width:980px){.app{grid-template-columns:1fr}}
   </style>
 </head>
@@ -61,10 +58,7 @@
   <div class="app">
     <div class="panel wheel-panel">
       <div class="title-row">
-        <div>
-          <h1 id="appTitle">SUFANA Smart Care Giveaway Wheel</h1>
-          <div class="subtitle" id="appSubtitle">Spin the wheel to choose a winner.</div>
-        </div>
+        <h1 id="appTitle">SUFANA Luxury Giveaway</h1>
         <button id="langBtn" class="secondary">AR</button>
       </div>
 
@@ -74,21 +68,22 @@
       </div>
 
       <div class="controls">
-        <button id="spinBtn" class="primary">Spin Wheel</button>
-        <button id="resetWinnersBtn" class="secondary">Reset Winners</button>
+        <button id="spinBtn" class="primary">SPIN FOR WELLNESS</button>
+        <button id="resetWinnersBtn" class="secondary">Reset</button>
       </div>
     </div>
 
     <div class="sidebar">
       <div class="panel">
-        <h2 class="card-title" id="winnerCardTitle">Winner</h2>
+        <h2 class="card-title">Latest Winner</h2>
         <div class="winner-box">
-          <div id="winnerText"><strong>Winner:</strong> None yet</div>
+          <div id="winnerText">Ready to spin...</div>
           <img id="winnerImage" style="display:none;" />
+          <div id="winnerTip" class="luxury-tip" style="display:none;"></div>
         </div>
       </div>
       <div class="panel">
-        <h2 class="card-title" id="imagesCardTitle">Wheel Items</h2>
+        <h2 class="card-title">Prize Inventory</h2>
         <div class="list" id="imageList"></div>
       </div>
     </div>
@@ -96,24 +91,53 @@
 
   <div class="popup" id="winnerPopup">
     <div class="popup-card">
-      <h2 id="popupTitle">Winner!</h2>
+      <h2 style="color:var(--gold)">Congratulations!</h2>
       <img id="popupImg" />
-      <div id="popupText" style="font-size:20px; font-weight:bold;"></div>
-      <button id="closePopupBtn" class="primary" style="margin-top:20px; width:100%">Close</button>
+      <div id="popupText" style="font-size:22px; font-weight:bold; margin-bottom:10px;"></div>
+      <div id="popupTip" class="luxury-tip"></div>
+      <button id="closePopupBtn" class="primary" style="margin-top:25px; width:100%">Continue Journey</button>
     </div>
   </div>
 
   <script>
-    const translations = {
-      en: { spin: "Spin Wheel", reset: "Reset Winners", winner: "Winner", none: "None yet", items: "Wheel Items", title: "Winner!" },
-      ar: { spin: "ابدأ الدوران", reset: "إعادة تعيين", winner: "الفائز", none: "لا يوجد بعد", items: "العناصر", title: "الفائز!" }
-    };
+    const luxuryTips = [
+      "Prioritize cellular regeneration with 8 hours of restorative sleep.",
+      "Infuse your water with organic cucumber and mint for luxury hydration.",
+      "Engage in mindful meditation to balance your cortisol levels.",
+      "Embrace deep breathing to oxygenate your bloodstream instantly.",
+      "Replace refined sugars with natural antioxidants like manuka honey.",
+      "Incorporate 20 minutes of vitamin D exposure every morning.",
+      "Savor high-quality dark chocolate for heart-healthy flavonoids.",
+      "Practice digital detoxing two hours before resting.",
+      "Fuel your brain with Omega-3 rich walnuts and seeds.",
+      "Elevate your posture to improve energy flow and confidence.",
+      "Start your day with warm lemon water to alkaline the body.",
+      "Choose movement that brings you joy to sustain metabolic health.",
+      "Nurture your skin with natural, cold-pressed botanical oils.",
+      "Listen to binaural beats to enhance cognitive focus.",
+      "Dedicate time to deep stretching to maintain joint longevity.",
+      "Use aromatherapy with lavender to lower evening anxiety.",
+      "Focus on single-tasking to reduce mental fatigue.",
+      "Invest in ergonomic seating to protect your spinal health.",
+      "Enjoy herbal infusions like chamomile for digestive calm.",
+      "Walk barefoot on grass for a natural grounding effect.",
+      "Consume probiotic-rich foods for a vibrant gut microbiome.",
+      "Limit caffeine intake after 2:00 PM for better sleep cycles.",
+      "Enhance indoor air quality with air-purifying plants.",
+      "Practice gratitude daily to boost your immune response.",
+      "Opt for steam baths to detoxify your lymphatic system.",
+      "Keep healthy snacks like almonds within reach at all times.",
+      "Schedule regular social connections to support mental well-being.",
+      "Use sea salt soaks to relieve muscular tension.",
+      "Focus on seasonal, locally sourced organic produce.",
+      "Remember: Consistency is the ultimate form of luxury health."
+    ];
 
-    let currentLang = "en";
     const itemCount = 30;
-    let items = JSON.parse(localStorage.getItem("sufana_items")) || Array.from({ length: itemCount }, (_, i) => ({
+    let items = JSON.parse(localStorage.getItem("sufana_luxury_items")) || Array.from({ length: itemCount }, (_, i) => ({
       id: i,
       image: `./Photo/${i + 1}.jpg`,
+      tip: luxuryTips[i % luxuryTips.length],
       winner: false
     }));
 
@@ -148,19 +172,16 @@
         const end = start + slice;
 
         ctx.save();
-        // 1. Create Clip for Slice
         ctx.beginPath();
         ctx.moveTo(cx, cy);
         ctx.arc(cx, cy, radius, start, end);
         ctx.closePath();
         ctx.clip();
 
-        // 2. Draw Background Image
         const loaded = loadedImages[i];
         if (loaded && loaded.ok) {
           ctx.translate(cx, cy);
           ctx.rotate(start + slice / 2 + Math.PI / 2);
-          // Scale image to fill the slice
           const imgW = radius * 1.5;
           const imgH = radius * 1.2;
           ctx.drawImage(loaded.img, -imgW / 2, -radius, imgW, imgH);
@@ -171,67 +192,66 @@
           ctx.fill();
         }
 
-        // 3. Darken if already won
         if (item.winner) {
-          ctx.fillStyle = "rgba(0,0,0,0.6)";
+          ctx.fillStyle = "rgba(0,0,0,0.65)";
           ctx.fill();
         }
         ctx.restore();
 
-        // 4. Border
+        // White Divider lines
         ctx.beginPath();
         ctx.moveTo(cx, cy);
         ctx.arc(cx, cy, radius, start, end);
         ctx.closePath();
-        ctx.strokeStyle = "rgba(255,255,255,0.3)";
+        ctx.strokeStyle = "rgba(255,255,255,0.25)";
         ctx.lineWidth = 1;
         ctx.stroke();
 
-        // 5. Numbers
+        // Numbers with shadow
         const angle = start + slice / 2;
-        const lx = cx + Math.cos(angle) * (radius * 0.85);
-        const ly = cy + Math.sin(angle) * (radius * 0.85);
+        const lx = cx + Math.cos(angle) * (radius * 0.86);
+        const ly = cy + Math.sin(angle) * (radius * 0.86);
 
         ctx.save();
         ctx.translate(lx, ly);
         ctx.rotate(angle + Math.PI / 2);
         ctx.fillStyle = "#fff";
-        ctx.font = "bold 16px Arial";
+        ctx.font = "bold 14px Arial";
         ctx.textAlign = "center";
-        ctx.shadowBlur = 4;
+        ctx.shadowBlur = 5;
         ctx.shadowColor = "black";
         ctx.fillText(i + 1, 0, 0);
         ctx.restore();
       });
 
-      // Center Piece
+      // Luxurious Center
       ctx.beginPath();
-      ctx.arc(cx, cy, 55, 0, Math.PI * 2);
+      ctx.arc(cx, cy, 60, 0, Math.PI * 2);
       ctx.fillStyle = "white";
       ctx.fill();
-      ctx.strokeStyle = "#0f172a";
-      ctx.lineWidth = 5;
+      ctx.strokeStyle = "#af905d";
+      ctx.lineWidth = 6;
       ctx.stroke();
 
       ctx.fillStyle = "#0f172a";
       ctx.textAlign = "center";
-      ctx.font = "bold 13px Arial";
+      ctx.font = "bold 14px Arial";
       ctx.fillText("SUFANA", cx, cy - 3);
-      ctx.font = "10px Arial";
-      ctx.fillText("Smart Care", cx, cy + 12);
+      ctx.font = "9px Arial";
+      ctx.fillText("LUXURY CARE", cx, cy + 12);
     }
 
     function spin() {
       if (spinning) return;
       const available = items.filter(v => !v.winner);
-      if (available.length === 0) return alert("All prizes won!");
+      if (available.length === 0) return alert("You have achieved all wellness goals!");
 
       const winner = available[Math.floor(Math.random() * available.length)];
       const winnerIndex = items.indexOf(winner);
       
       spinning = true;
-      const duration = 5000;
-      const rotations = 7;
+      const duration = 6000;
+      const rotations = 8;
       const sliceSize = (Math.PI * 2) / items.length;
       const targetAngle = (Math.PI * 1.5) - (winnerIndex * sliceSize + sliceSize / 2);
       const initialRotation = currentRotation % (Math.PI * 2);
@@ -241,7 +261,7 @@
       function animate(time) {
         const elapsed = time - start;
         const t = Math.min(elapsed / duration, 1);
-        const ease = 1 - Math.pow(1 - t, 4);
+        const ease = 1 - Math.pow(1 - t, 5); // Smooth luxurious stop
         currentRotation = initialRotation + (finalRotation - initialRotation) * ease;
         drawWheel();
 
@@ -249,7 +269,7 @@
         else {
           spinning = false;
           winner.winner = true;
-          localStorage.setItem("sufana_items", JSON.stringify(items));
+          localStorage.setItem("sufana_luxury_items", JSON.stringify(items));
           showResult(winner);
           renderList();
         }
@@ -261,19 +281,23 @@
       document.getElementById("winnerText").innerHTML = `<strong>Winner:</strong> Item ${item.id + 1}`;
       document.getElementById("winnerImage").src = item.image;
       document.getElementById("winnerImage").style.display = "block";
+      document.getElementById("winnerTip").innerText = item.tip;
+      document.getElementById("winnerTip").style.display = "block";
+
       document.getElementById("popupImg").src = item.image;
       document.getElementById("popupText").innerText = `Item ${item.id + 1}`;
+      document.getElementById("popupTip").innerText = item.tip;
       document.getElementById("winnerPopup").classList.add("active");
     }
 
     function renderList() {
       const container = document.getElementById("imageList");
       container.innerHTML = items.map(item => `
-        <div class="item">
+        <div class="item" style="${item.winner ? 'opacity: 0.5' : ''}">
           <img src="${item.image}">
           <div>
             <strong>Item ${item.id + 1}</strong>
-            ${item.winner ? '<br><span class="badge">Won</span>' : ''}
+            <div style="font-size:11px; color:#94a3b8; margin-top:4px">${item.tip.substring(0, 35)}...</div>
           </div>
         </div>
       `).join('');
@@ -283,7 +307,7 @@
     document.getElementById("closePopupBtn").onclick = () => document.getElementById("winnerPopup").classList.remove("active");
     document.getElementById("resetWinnersBtn").onclick = () => {
       items.forEach(i => i.winner = false);
-      localStorage.removeItem("sufana_items");
+      localStorage.removeItem("sufana_luxury_items");
       renderList();
       drawWheel();
     };
