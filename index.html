@@ -352,100 +352,88 @@
       );
     }
 
-    function drawWheel(rotation = currentRotation){
-      const size = canvas.width;
-      const cx = size / 2;
-      const cy = size / 2;
-      const radius = size * 0.46;
-      const slice = (Math.PI * 2) / items.length;
+    function drawWheel(rotation = currentRotation) {
+  const size = canvas.width;
+  const cx = size / 2;
+  const cy = size / 2;
+  const radius = size * 0.46;
+  const slice = (Math.PI * 2) / items.length;
 
-      ctx.clearRect(0, 0, size, size);
+  ctx.clearRect(0, 0, size, size);
 
-      for (let i = 0; i < items.length; i++) {
-        const start = rotation + i * slice - Math.PI / 2;
-        const end = start + slice;
+  for (let i = 0; i < items.length; i++) {
+    const start = rotation + i * slice - Math.PI / 2;
+    const end = start + slice;
 
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.arc(cx, cy, radius, start, end);
-        ctx.closePath();
-        ctx.fillStyle = fallbackColors[i % fallbackColors.length];
-        ctx.fill();
+    // Draw Background Slice
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, radius, start, end);
+    ctx.closePath();
+    ctx.fillStyle = fallbackColors[i % fallbackColors.length];
+    ctx.fill();
 
-        ctx.save();
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.arc(cx, cy, radius, start, end);
-        ctx.closePath();
-        ctx.clip();
-
-        const loaded = loadedImages[i];
-        if (loaded && loaded.ok && loaded.img) {
-          const img = loaded.img;
-          const angle = start + slice / 2;
-          const r = radius * 0.62;
-          const ix = cx + Math.cos(angle) * r;
-          const iy = cy + Math.sin(angle) * r;
-
-          const thumb = 52;
-          const side = Math.min(img.width, img.height);
-          const sx = (img.width - side) / 2;
-          const sy = (img.height - side) / 2;
-
-          ctx.drawImage(img, sx, sy, side, side, ix - thumb / 2, iy - thumb / 2, thumb, thumb);
-        }
-
-        ctx.restore();
-
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.arc(cx, cy, radius, start, end);
-        ctx.closePath();
-        ctx.fillStyle = items[i].winner ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.08)";
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.arc(cx, cy, radius, start, end);
-        ctx.closePath();
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = "rgba(255,255,255,0.95)";
-        ctx.stroke();
-
-        const labelAngle = start + slice / 2;
-        const lr = radius * 0.8;
-        const lx = cx + Math.cos(labelAngle) * lr;
-        const ly = cy + Math.sin(labelAngle) * lr;
-
-        ctx.save();
-        ctx.translate(lx, ly);
-        ctx.rotate(labelAngle + Math.PI / 2);
-        ctx.textAlign = "center";
-        ctx.fillStyle = "#111827";
-        ctx.strokeStyle = "rgba(255,255,255,0.96)";
-        ctx.lineWidth = 4;
-        ctx.font = "bold 12px Arial";
-        const label = String(i + 1);
-        ctx.strokeText(label, 0, 0);
-        ctx.fillText(label, 0, 0);
-        ctx.restore();
-      }
-
+    // Draw Image
+    const loaded = loadedImages[i];
+    if (loaded && loaded.ok && loaded.img) {
+      ctx.save();
+      // Create a clipping path for the slice so image doesn't bleed out
       ctx.beginPath();
-      ctx.arc(cx, cy, size * 0.09, 0, Math.PI * 2);
-      ctx.fillStyle = "#ffffff";
-      ctx.fill();
-      ctx.lineWidth = 5;
-      ctx.strokeStyle = "#111827";
-      ctx.stroke();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, radius, start, end);
+      ctx.closePath();
+      ctx.clip();
 
-      ctx.fillStyle = "#5b87a8";
-      ctx.font = "bold 16px Arial";
-      ctx.textAlign = "center";
-      ctx.fillText("SUFANA", cx, cy - 4);
-      ctx.font = "12px Arial";
-      ctx.fillText("Smart Care", cx, cy + 14);
+      const img = loaded.img;
+      const angle = start + slice / 2;
+      const r = radius * 0.55; // Adjusted distance from center
+      const ix = cx + Math.cos(angle) * r;
+      const iy = cy + Math.sin(angle) * r;
+
+      const thumb = 45; // Size of the image in the wheel
+      
+      ctx.translate(ix, iy);
+      ctx.rotate(angle + Math.PI / 2); // Rotates image to face center
+      
+      // Draw centered image
+      ctx.drawImage(img, -thumb / 2, -thumb / 2, thumb, thumb);
+      ctx.restore();
     }
+
+    // Draw Slice Borders
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, radius, start, end);
+    ctx.closePath();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "rgba(255,255,255,0.5)";
+    ctx.stroke();
+
+    // Draw Labels (Numbers)
+    const labelAngle = start + slice / 2;
+    const lr = radius * 0.85;
+    const lx = cx + Math.cos(labelAngle) * lr;
+    const ly = cy + Math.sin(labelAngle) * lr;
+
+    ctx.save();
+    ctx.translate(lx, ly);
+    ctx.rotate(labelAngle + Math.PI / 2);
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 10px Arial";
+    ctx.fillText(i + 1, 0, 0);
+    ctx.restore();
+  }
+
+  // Draw Center Decorative Circle
+  ctx.beginPath();
+  ctx.arc(cx, cy, size * 0.1, 0, Math.PI * 2);
+  ctx.fillStyle = "#fff";
+  ctx.fill();
+  ctx.strokeStyle = "#111827";
+  ctx.lineWidth = 4;
+  ctx.stroke();
+}
 
     function getWheelIndexForItem(itemId){
       return items.findIndex(item => item.id === itemId);
@@ -591,11 +579,11 @@
     });
 
     async function init(){
-      updateTexts();
-      await reloadAndDraw();
-    }
+      loadedImages = await loadImages(); 
+  drawWheel();
+}
 
-    init();
+   init();
   </script>
 </body>
 </html>
