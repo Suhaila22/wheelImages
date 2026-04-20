@@ -635,7 +635,8 @@
 
     let items = JSON.parse(localStorage.getItem("sufana_wheel_items") || "null") || [
       {
-        items
+       window.items = items;
+       console.log("Items loaded:", items);
         id: cryptoRandomId(),
         label_en: "Quiet Luxury",
         label_ar: "فخامة هادئة",
