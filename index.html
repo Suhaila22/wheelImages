@@ -15,7 +15,7 @@
       --danger:#ef4444;
       --shadow:0 14px 36px rgba(0,0,0,.12);
       --radius:18px;
-      --wheel-size:min(88vw,560px);
+      --wheel-size:min(88vw,580px);
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
@@ -26,73 +26,56 @@
     .title-row{width:100%;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
     .title-row h1{margin:0 0 6px;font-size:24px}
     .subtitle{color:var(--muted);font-size:14px;line-height:1.5}
-    .top-actions{display:flex;gap:8px;flex-wrap:wrap}
     .pointer{
       width:0;height:0;
-      border-left:18px solid transparent;
-      border-right:18px solid transparent;
-      border-top:32px solid var(--danger);
-      margin-bottom:-8px;
-      z-index:3;
-      filter:drop-shadow(0 3px 4px rgba(0,0,0,.22));
+      border-left:20px solid transparent;
+      border-right:20px solid transparent;
+      border-top:35px solid var(--danger);
+      margin-bottom:-10px;
+      z-index:10;
+      filter:drop-shadow(0 3px 4px rgba(0,0,0,.3));
     }
     .canvas-wrap{width:var(--wheel-size);height:var(--wheel-size);position:relative}
-    canvas{width:100%;height:100%;display:block;border-radius:50%;background:#fff;box-shadow:0 20px 50px rgba(0,0,0,.22)}
+    canvas{width:100%;height:100%;display:block;border-radius:50%;background:#fff;box-shadow:0 20px 50px rgba(0,0,0,.25)}
     .controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%}
-    button{
-      border:none;border-radius:12px;padding:12px 16px;font-size:14px;font-weight:700;cursor:pointer;min-height:44px
-    }
+    button{border:none;border-radius:12px;padding:12px 16px;font-size:14px;font-weight:700;cursor:pointer;min-height:44px}
     .primary{background:var(--primary);color:#fff}
     .secondary{background:#e5e7eb;color:var(--text)}
     .danger{background:#fee2e2;color:#991b1b}
     .sidebar{display:flex;flex-direction:column;gap:16px}
     .card-title{margin:0 0 12px;font-size:20px}
-    .winner-box,.stats-box,.settings-box{padding:14px;border-radius:14px;background:#f8fafc;border:1px solid #e5e7eb}
+    .winner-box{padding:14px;border-radius:14px;background:#f8fafc;border:1px solid #e5e7eb;text-align:center}
     .winner-box img{width:100%;max-height:220px;object-fit:cover;border-radius:12px;margin-top:12px;box-shadow:0 8px 24px rgba(0,0,0,.14)}
-    .tip-box{margin-top:12px;padding:12px;border-radius:12px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;font-size:14px;line-height:1.5}
-    .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .stat{padding:12px;border-radius:12px;background:#fff;border:1px solid #e5e7eb;text-align:center}
-    .stat .value{font-size:22px;font-weight:700}
-    .stat .label{font-size:12px;color:var(--muted);margin-top:4px}
-    .list{display:grid;gap:10px;max-height:420px;overflow:auto;padding-right:4px}
+    .list{display:grid;gap:10px;max-height:450px;overflow:auto;padding-right:4px}
     .item{display:grid;grid-template-columns:58px 1fr;gap:12px;align-items:center;padding:8px;border-radius:12px;background:#f9fafb;border:1px solid #e5e7eb}
     .item img{width:58px;height:58px;object-fit:cover;border-radius:10px;background:#ddd}
-    .item .name{font-size:14px;font-weight:700}
-    .item .meta{font-size:12px;color:var(--muted);word-break:break-word;margin-top:3px}
     .badge{display:inline-block;margin-top:5px;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700;background:#dcfce7;color:#166534}
-    .popup{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;z-index:10000;padding:18px}
+    .popup{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:10000;padding:18px}
     .popup.active{display:flex}
-    .popup-card{width:min(92vw,420px);background:#fff;border-radius:20px;padding:20px;box-shadow:0 24px 50px rgba(0,0,0,.28);text-align:center}
-    .popup-card img{width:100%;max-height:240px;object-fit:cover;border-radius:14px;margin:14px 0}
-    .popup-title{font-size:24px;font-weight:700;margin:0}
-    .popup-subtitle{color:var(--muted);font-size:14px;margin-top:6px}
-    .popup-tip{margin-top:12px;padding:12px;border-radius:12px;background:#eff6ff;color:#1e3a8a;font-size:14px;line-height:1.5}
-    @media (max-width:980px){.app{grid-template-columns:1fr}.list{max-height:none}}
+    .popup-card{width:min(92vw,420px);background:#fff;border-radius:20px;padding:25px;text-align:center}
+    .popup-card img{width:100%;max-height:240px;object-fit:cover;border-radius:14px;margin:15px 0}
+    @media (max-width:980px){.app{grid-template-columns:1fr}}
   </style>
 </head>
-<body lang="en" dir="ltr">
+<body>
   <div class="app">
     <div class="panel wheel-panel">
       <div class="title-row">
         <div>
           <h1 id="appTitle">SUFANA Smart Care Giveaway Wheel</h1>
-          <div class="subtitle" id="appSubtitle">Spin the wheel, choose a winner automatically, and reveal a health tip with every result.</div>
+          <div class="subtitle" id="appSubtitle">Spin the wheel to choose a winner.</div>
         </div>
-        <div class="top-actions">
-          <button id="langBtn" class="secondary">AR</button>
-        </div>
+        <button id="langBtn" class="secondary">AR</button>
       </div>
 
       <div class="pointer"></div>
       <div class="canvas-wrap">
-        <canvas id="wheel" width="560" height="560"></canvas>
+        <canvas id="wheel" width="600" height="600"></canvas>
       </div>
 
       <div class="controls">
         <button id="spinBtn" class="primary">Spin Wheel</button>
-        <button id="redrawBtn" class="secondary">Redraw</button>
         <button id="resetWinnersBtn" class="secondary">Reset Winners</button>
-        <button id="resetStatsBtn" class="danger">Reset Stats</button>
       </div>
     </div>
 
@@ -101,30 +84,9 @@
         <h2 class="card-title" id="winnerCardTitle">Winner</h2>
         <div class="winner-box">
           <div id="winnerText"><strong>Winner:</strong> None yet</div>
-          <img id="winnerImage" alt="Winner preview" style="display:none;" />
-          <div class="tip-box" id="winnerTipBox" style="display:none;">
-            <strong id="tipLabel">Health Tip:</strong>
-            <div id="winnerTip" style="margin-top:6px;"></div>
-          </div>
+          <img id="winnerImage" style="display:none;" />
         </div>
       </div>
-
-      <div class="panel">
-        <h2 class="card-title" id="statsCardTitle">Tracking</h2>
-        <div class="stats-box">
-          <div class="stats-grid">
-            <div class="stat">
-              <div class="value" id="spinCount">0</div>
-              <div class="label" id="spinCountLabel">Total Spins</div>
-            </div>
-            <div class="stat">
-              <div class="value" id="clickCount">0</div>
-              <div class="label" id="clickCountLabel">Page Opens</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div class="panel">
         <h2 class="card-title" id="imagesCardTitle">Wheel Items</h2>
         <div class="list" id="imageList"></div>
@@ -134,395 +96,201 @@
 
   <div class="popup" id="winnerPopup">
     <div class="popup-card">
-      <h3 class="popup-title" id="popupTitle">Winner</h3>
-      <div class="popup-subtitle" id="popupSubtitle">Congratulations</div>
-      <img id="popupImg" alt="Winner image" />
-      <div id="popupText" style="font-size:18px;font-weight:700;"></div>
-      <div class="popup-tip">
-        <strong id="popupTipLabel">Health Tip</strong>
-        <div id="popupTip" style="margin-top:6px;"></div>
-      </div>
-      <div style="margin-top:16px;">
-        <button id="closePopupBtn" class="primary">Close</button>
-      </div>
+      <h2 id="popupTitle">Winner!</h2>
+      <img id="popupImg" />
+      <div id="popupText" style="font-size:20px; font-weight:bold;"></div>
+      <button id="closePopupBtn" class="primary" style="margin-top:20px; width:100%">Close</button>
     </div>
   </div>
 
   <script>
     const translations = {
-      en: {
-        appTitle: "SUFANA Smart Care Giveaway Wheel",
-        appSubtitle: "Spin the wheel, choose a winner automatically, and reveal a health tip with every result.",
-        spinWheel: "Spin Wheel",
-        redraw: "Redraw",
-        resetWinners: "Reset Winners",
-        resetStats: "Reset Stats",
-        winnerCardTitle: "Winner",
-        winner: "Winner",
-        noneYet: "None yet",
-        tipLabel: "Health Tip:",
-        statsCardTitle: "Tracking",
-        spinCountLabel: "Total Spins",
-        clickCountLabel: "Page Opens",
-        imagesCardTitle: "Wheel Items",
-        alreadyWon: "Already won",
-        popupTitle: "Winner",
-        popupSubtitle: "Congratulations",
-        popupTipLabel: "Health Tip",
-        close: "Close",
-        spinning: "Spinning...",
-        allWinnersUsed: "All items have already won. Reset winners to spin again.",
-        winnersReset: "Winners have been reset.",
-        statsReset: "Tracking data has been reset."
-      },
-      ar: {
-        appTitle: "عجلة سُفانا سمارت كير",
-        appSubtitle: "أدر العجلة، اختر فائزًا تلقائيًا، واعرض نصيحة صحية مع كل نتيجة.",
-        spinWheel: "ابدأ الدوران",
-        redraw: "إعادة الرسم",
-        resetWinners: "إعادة الفائزين",
-        resetStats: "إعادة الإحصاءات",
-        winnerCardTitle: "الفائز",
-        winner: "الفائز",
-        noneYet: "لا يوجد بعد",
-        tipLabel: "نصيحة صحية:",
-        statsCardTitle: "التتبع",
-        spinCountLabel: "إجمالي الدوران",
-        clickCountLabel: "مرات فتح الصفحة",
-        imagesCardTitle: "عناصر العجلة",
-        alreadyWon: "فاز سابقًا",
-        popupTitle: "الفائز",
-        popupSubtitle: "تهانينا",
-        popupTipLabel: "نصيحة صحية",
-        close: "إغلاق",
-        spinning: "جارٍ الدوران...",
-        allWinnersUsed: "كل العناصر فازت مسبقًا. أعِد تعيين الفائزين لتدور مرة أخرى.",
-        winnersReset: "تمت إعادة تعيين الفائزين.",
-        statsReset: "تمت إعادة تعيين بيانات التتبع."
-      }
+      en: { spin: "Spin Wheel", reset: "Reset Winners", winner: "Winner", none: "None yet", items: "Wheel Items", title: "Winner!" },
+      ar: { spin: "ابدأ الدوران", reset: "إعادة تعيين", winner: "الفائز", none: "لا يوجد بعد", items: "العناصر", title: "الفائز!" }
     };
 
-    let currentLang = localStorage.getItem("sufana_lang") || "en";
-
-    function cryptoRandomId() {
-      return "id-" + Math.random().toString(36).slice(2, 10);
-    }
-
-    const defaultItems = Array.from({ length: 30 }, (_, i) => ({
-      id: cryptoRandomId(),
-      label_en: String(i + 1),
-      label_ar: String(i + 1),
+    let currentLang = "en";
+    const itemCount = 30;
+    let items = JSON.parse(localStorage.getItem("sufana_items")) || Array.from({ length: itemCount }, (_, i) => ({
+      id: i,
       image: `./Photo/${i + 1}.jpg`,
-      tip_en: `Health tip for image ${i + 1}.`,
-      tip_ar: `نصيحة صحية للصورة ${i + 1}.`,
       winner: false
     }));
 
-    let items = JSON.parse(localStorage.getItem("sufana_wheel_items") || "null") || defaultItems;
     let loadedImages = [];
     let currentRotation = 0;
     let spinning = false;
 
-    const statsKey = "sufana_wheel_stats";
-    const stats = JSON.parse(localStorage.getItem(statsKey) || "null") || {
-      pageOpens: 0,
-      totalSpins: 0,
-      history: []
-    };
-    stats.pageOpens += 1;
-    saveStats();
-
-    const fallbackColors = ["#0f172a","#1e293b","#334155","#1d4ed8","#2563eb","#3b82f6","#60a5fa","#93c5fd"];
-
     const canvas = document.getElementById("wheel");
     const ctx = canvas.getContext("2d");
 
-    const spinBtn = document.getElementById("spinBtn");
-    const redrawBtn = document.getElementById("redrawBtn");
-    const resetWinnersBtn = document.getElementById("resetWinnersBtn");
-    const resetStatsBtn = document.getElementById("resetStatsBtn");
-    const langBtn = document.getElementById("langBtn");
-
-    const winnerText = document.getElementById("winnerText");
-    const winnerImage = document.getElementById("winnerImage");
-    const winnerTipBox = document.getElementById("winnerTipBox");
-    const winnerTip = document.getElementById("winnerTip");
-    const imageList = document.getElementById("imageList");
-
-    const spinCount = document.getElementById("spinCount");
-    const clickCount = document.getElementById("clickCount");
-
-    const winnerPopup = document.getElementById("winnerPopup");
-    const popupImg = document.getElementById("popupImg");
-    const popupText = document.getElementById("popupText");
-    const popupTip = document.getElementById("popupTip");
-    const closePopupBtn = document.getElementById("closePopupBtn");
-
-    function t(key){ return translations[currentLang][key]; }
-    function getItemLabel(item){ return currentLang === "ar" ? item.label_ar : item.label_en; }
-    function getItemTip(item){ return currentLang === "ar" ? item.tip_ar : item.tip_en; }
-
-    function saveItems(){ localStorage.setItem("sufana_wheel_items", JSON.stringify(items)); }
-    function saveStats(){ localStorage.setItem(statsKey, JSON.stringify(stats)); }
-
-    function updateTexts(){
-      document.documentElement.lang = currentLang;
-      document.body.setAttribute("lang", currentLang);
-      document.body.setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
-
-      document.getElementById("appTitle").textContent = t("appTitle");
-      document.getElementById("appSubtitle").textContent = t("appSubtitle");
-      spinBtn.textContent = t("spinWheel");
-      redrawBtn.textContent = t("redraw");
-      resetWinnersBtn.textContent = t("resetWinners");
-      resetStatsBtn.textContent = t("resetStats");
-
-      document.getElementById("winnerCardTitle").textContent = t("winnerCardTitle");
-      document.getElementById("tipLabel").textContent = t("tipLabel");
-      document.getElementById("statsCardTitle").textContent = t("statsCardTitle");
-      document.getElementById("spinCountLabel").textContent = t("spinCountLabel");
-      document.getElementById("clickCountLabel").textContent = t("clickCountLabel");
-      document.getElementById("imagesCardTitle").textContent = t("imagesCardTitle");
-
-      document.getElementById("popupTitle").textContent = t("popupTitle");
-      document.getElementById("popupSubtitle").textContent = t("popupSubtitle");
-      document.getElementById("popupTipLabel").textContent = t("popupTipLabel");
-      closePopupBtn.textContent = t("close");
-
-      langBtn.textContent = currentLang === "en" ? "AR" : "EN";
-
-      updateWinnerPanelTexts();
-      createImageList();
-      updateStatsUI();
+    async function loadAllImages() {
+      const promises = items.map(item => new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => resolve({ ok: true, img });
+        img.onerror = () => resolve({ ok: false, img: null });
+        img.src = item.image;
+      }));
+      loadedImages = await Promise.all(promises);
     }
 
-    function updateWinnerPanelTexts(){
-      const currentWinnerId = winnerText.dataset.winnerId;
-      if (!currentWinnerId) {
-        winnerText.innerHTML = `<strong>${t("winner")}:</strong> ${t("noneYet")}`;
-        winnerTipBox.style.display = "none";
-        return;
-      }
-      const item = items.find(x => x.id === currentWinnerId);
-      if (!item) return;
-      winnerText.innerHTML = `<strong>${t("winner")}:</strong> ${getItemLabel(item)}`;
-      winnerTip.textContent = getItemTip(item);
-      winnerTipBox.style.display = "block";
-    }
-
-    function updateStatsUI(){
-      spinCount.textContent = stats.totalSpins;
-      clickCount.textContent = stats.pageOpens;
-    }
-
-    function createImageList(){
-      imageList.innerHTML = "";
-      items.forEach((item) => {
-        const row = document.createElement("div");
-        row.className = "item";
-        row.innerHTML = `
-          <img src="${item.image}" alt="${getItemLabel(item)}">
-          <div>
-            <div class="name">${getItemLabel(item)}</div>
-            <div class="meta">${item.image}</div>
-            ${item.winner ? `<span class="badge">${t("alreadyWon")}</span>` : ""}
-          </div>
-        `;
-        imageList.appendChild(row);
-      });
-    }
-
-    function loadImages(){
-      return Promise.all(
-        items.map((item) => new Promise((resolve) => {
-          const img = new Image();
-          img.onload = () => resolve({ ok:true, img });
-          img.onerror = () => resolve({ ok:false, img:null });
-          img.src = item.image;
-        }))
-      );
-    }
-
-    function drawWheel(rotation = currentRotation){
+    function drawWheel(rotation = currentRotation) {
       const size = canvas.width;
       const cx = size / 2;
       const cy = size / 2;
-      const radius = size * 0.46;
+      const radius = size * 0.48;
       const slice = (Math.PI * 2) / items.length;
 
       ctx.clearRect(0, 0, size, size);
 
-      for (let i = 0; i < items.length; i++) {
+      items.forEach((item, i) => {
         const start = rotation + i * slice - Math.PI / 2;
         const end = start + slice;
 
-        // Draw slice background
+        ctx.save();
+        // 1. Create Clip for Slice
         ctx.beginPath();
         ctx.moveTo(cx, cy);
         ctx.arc(cx, cy, radius, start, end);
         ctx.closePath();
-        ctx.fillStyle = fallbackColors[i % fallbackColors.length];
-        ctx.fill();
+        ctx.clip();
 
-        // Draw image if loaded
+        // 2. Draw Background Image
         const loaded = loadedImages[i];
-        if (loaded && loaded.ok && loaded.img) {
-            ctx.save();
-            const angle = start + slice / 2;
-            const r = radius * 0.60;
-            const ix = cx + Math.cos(angle) * r;
-            const iy = cy + Math.sin(angle) * r;
-            const thumb = 48;
-
-            ctx.translate(ix, iy);
-            ctx.rotate(angle + Math.PI / 2);
-            ctx.drawImage(loaded.img, -thumb/2, -thumb/2, thumb, thumb);
-            ctx.restore();
+        if (loaded && loaded.ok) {
+          ctx.translate(cx, cy);
+          ctx.rotate(start + slice / 2 + Math.PI / 2);
+          // Scale image to fill the slice
+          const imgW = radius * 1.5;
+          const imgH = radius * 1.2;
+          ctx.drawImage(loaded.img, -imgW / 2, -radius, imgW, imgH);
+          ctx.rotate(-(start + slice / 2 + Math.PI / 2));
+          ctx.translate(-cx, -cy);
+        } else {
+          ctx.fillStyle = i % 2 === 0 ? "#1e293b" : "#334155";
+          ctx.fill();
         }
 
-        // Overlay for winners/borders
+        // 3. Darken if already won
+        if (item.winner) {
+          ctx.fillStyle = "rgba(0,0,0,0.6)";
+          ctx.fill();
+        }
+        ctx.restore();
+
+        // 4. Border
         ctx.beginPath();
         ctx.moveTo(cx, cy);
         ctx.arc(cx, cy, radius, start, end);
         ctx.closePath();
-        ctx.fillStyle = items[i].winner ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.05)";
-        ctx.fill();
-        ctx.strokeStyle = "rgba(255,255,255,0.8)";
+        ctx.strokeStyle = "rgba(255,255,255,0.3)";
         ctx.lineWidth = 1;
         ctx.stroke();
 
-        // Label
-        const labelAngle = start + slice / 2;
-        const lr = radius * 0.82;
-        const lx = cx + Math.cos(labelAngle) * lr;
-        const ly = cy + Math.sin(labelAngle) * lr;
+        // 5. Numbers
+        const angle = start + slice / 2;
+        const lx = cx + Math.cos(angle) * (radius * 0.85);
+        const ly = cy + Math.sin(angle) * (radius * 0.85);
 
         ctx.save();
         ctx.translate(lx, ly);
-        ctx.rotate(labelAngle + Math.PI / 2);
-        ctx.textAlign = "center";
+        ctx.rotate(angle + Math.PI / 2);
         ctx.fillStyle = "#fff";
-        ctx.font = "bold 12px Arial";
+        ctx.font = "bold 16px Arial";
+        ctx.textAlign = "center";
+        ctx.shadowBlur = 4;
+        ctx.shadowColor = "black";
         ctx.fillText(i + 1, 0, 0);
         ctx.restore();
-      }
+      });
 
-      // Center logo
+      // Center Piece
       ctx.beginPath();
-      ctx.arc(cx, cy, size * 0.1, 0, Math.PI * 2);
-      ctx.fillStyle = "#fff";
+      ctx.arc(cx, cy, 55, 0, Math.PI * 2);
+      ctx.fillStyle = "white";
       ctx.fill();
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = "#111827";
+      ctx.strokeStyle = "#0f172a";
+      ctx.lineWidth = 5;
       ctx.stroke();
 
-      ctx.fillStyle = "#5b87a8";
-      ctx.font = "bold 14px Arial";
+      ctx.fillStyle = "#0f172a";
       ctx.textAlign = "center";
-      ctx.fillText("SUFANA", cx, cy - 2);
+      ctx.font = "bold 13px Arial";
+      ctx.fillText("SUFANA", cx, cy - 3);
+      ctx.font = "10px Arial";
+      ctx.fillText("Smart Care", cx, cy + 12);
     }
 
-    function computeTargetRotationForIndex(index){
-      const slice = (Math.PI * 2) / items.length;
-      const centerAngle = index * slice + slice / 2;
-      const pointerAngle = 3 * Math.PI / 2;
-      return pointerAngle - centerAngle;
-    }
-
-    function normalizeRotation(angle){
-      return ((angle % (Math.PI * 2)) + (Math.PI * 2)) % (Math.PI * 2);
-    }
-
-    function chooseAvailableWinner(){
-      const available = items.filter(item => !item.winner);
-      if (!available.length) return null;
-      return available[Math.floor(Math.random() * available.length)];
-    }
-
-    function showWinner(item){
-      winnerText.dataset.winnerId = item.id;
-      winnerText.innerHTML = `<strong>${t("winner")}:</strong> ${getItemLabel(item)}`;
-      winnerImage.src = item.image;
-      winnerImage.style.display = "block";
-      winnerTip.textContent = getItemTip(item);
-      winnerTipBox.style.display = "block";
-
-      popupImg.src = item.image;
-      popupText.textContent = getItemLabel(item);
-      popupTip.textContent = getItemTip(item);
-      winnerPopup.classList.add("active");
-    }
-
-    function spinWheel(){
+    function spin() {
       if (spinning) return;
-      const chosen = chooseAvailableWinner();
-      if (!chosen) {
-        alert(t("allWinnersUsed"));
-        return;
-      }
+      const available = items.filter(v => !v.winner);
+      if (available.length === 0) return alert("All prizes won!");
 
-      const winnerIndex = items.findIndex(x => x.id === chosen.id);
+      const winner = available[Math.floor(Math.random() * available.length)];
+      const winnerIndex = items.indexOf(winner);
+      
       spinning = true;
-      spinBtn.disabled = true;
+      const duration = 5000;
+      const rotations = 7;
+      const sliceSize = (Math.PI * 2) / items.length;
+      const targetAngle = (Math.PI * 1.5) - (winnerIndex * sliceSize + sliceSize / 2);
+      const initialRotation = currentRotation % (Math.PI * 2);
+      const finalRotation = initialRotation + (rotations * Math.PI * 2) + (targetAngle - initialRotation);
 
-      const duration = 4500;
-      const extraTurns = 8;
-      const baseTarget = computeTargetRotationForIndex(winnerIndex);
-      const currentNorm = normalizeRotation(currentRotation);
-      let delta = baseTarget - currentNorm;
-      if (delta < 0) delta += Math.PI * 2;
+      const start = performance.now();
+      function animate(time) {
+        const elapsed = time - start;
+        const t = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - t, 4);
+        currentRotation = initialRotation + (finalRotation - initialRotation) * ease;
+        drawWheel();
 
-      const targetRotation = currentRotation + extraTurns * Math.PI * 2 + delta;
-      const initialRotation = currentRotation;
-      const startTime = performance.now();
-
-      function animate(now){
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 4);
-
-        currentRotation = initialRotation + (targetRotation - initialRotation) * eased;
-        drawWheel(currentRotation);
-
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          chosen.winner = true;
-          saveItems();
-          stats.totalSpins += 1;
-          saveStats();
-          updateStatsUI();
-          createImageList();
-          showWinner(chosen);
+        if (t < 1) requestAnimationFrame(animate);
+        else {
           spinning = false;
-          spinBtn.disabled = false;
+          winner.winner = true;
+          localStorage.setItem("sufana_items", JSON.stringify(items));
+          showResult(winner);
+          renderList();
         }
       }
       requestAnimationFrame(animate);
     }
 
-    langBtn.addEventListener("click", () => {
-      currentLang = currentLang === "en" ? "ar" : "en";
-      localStorage.setItem("sufana_lang", currentLang);
-      updateTexts();
-      drawWheel();
-    });
+    function showResult(item) {
+      document.getElementById("winnerText").innerHTML = `<strong>Winner:</strong> Item ${item.id + 1}`;
+      document.getElementById("winnerImage").src = item.image;
+      document.getElementById("winnerImage").style.display = "block";
+      document.getElementById("popupImg").src = item.image;
+      document.getElementById("popupText").innerText = `Item ${item.id + 1}`;
+      document.getElementById("winnerPopup").classList.add("active");
+    }
 
-    spinBtn.addEventListener("click", spinWheel);
-    redrawBtn.addEventListener("click", () => drawWheel());
-    closePopupBtn.addEventListener("click", () => winnerPopup.classList.remove("active"));
-    
-    resetWinnersBtn.addEventListener("click", async () => {
-      items = items.map(item => ({ ...item, winner: false }));
-      saveItems();
-      updateTexts();
-      drawWheel();
-      alert(t("winnersReset"));
-    });
+    function renderList() {
+      const container = document.getElementById("imageList");
+      container.innerHTML = items.map(item => `
+        <div class="item">
+          <img src="${item.image}">
+          <div>
+            <strong>Item ${item.id + 1}</strong>
+            ${item.winner ? '<br><span class="badge">Won</span>' : ''}
+          </div>
+        </div>
+      `).join('');
+    }
 
-    async function init(){
-      updateTexts();
-      loadedImages = await loadImages();
+    document.getElementById("spinBtn").onclick = spin;
+    document.getElementById("closePopupBtn").onclick = () => document.getElementById("winnerPopup").classList.remove("active");
+    document.getElementById("resetWinnersBtn").onclick = () => {
+      items.forEach(i => i.winner = false);
+      localStorage.removeItem("sufana_items");
+      renderList();
+      drawWheel();
+    };
+
+    async function init() {
+      await loadAllImages();
+      renderList();
       drawWheel();
     }
 
