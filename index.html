@@ -1,89 +1,94 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SUFANA Smart Care Wheel</title>
+  <title>SUFANA Smart Care</title>
   <style>
     :root{
-      --bg:#f4f7f9;
+      --bg:#f1f5f9;
       --card:#ffffff;
-      --gold:#af905d;
+      --primary:#2563eb;
       --text:#0f172a;
-      --muted:#64748b;
-      --primary:#0f172a;
-      --danger:#ef4444;
-      --shadow:0 10px 30px rgba(0,0,0,0.08);
-      --wheel-size:min(88vw,580px);
+      --shadow:0 10px 25px rgba(0,0,0,0.1);
+      --wheel-size:min(90vw,560px);
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;background:var(--bg);color:var(--text)}
-    .app{max-width:1300px;margin:0 auto;padding:20px;display:grid;grid-template-columns:1fr 400px;gap:25px;min-height:100vh}
-    .panel{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:20px}
-    .wheel-panel{display:flex;flex-direction:column;align-items:center;gap:15px}
-    .title-row{width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-    .title-row h1{margin:0;font-size:22px;color:var(--gold);text-transform:uppercase;letter-spacing:1px}
+    body{margin:0;font-family:sans-serif;background:var(--bg);color:var(--text);transition:direction 0.3s}
+    body[dir="rtl"]{font-family: 'Segoe UI', Tahoma, sans-serif;}
+    
+    .app{max-width:1200px;margin:0 auto;padding:20px;display:grid;grid-template-columns:1fr 380px;gap:20px}
+    .panel{background:var(--card);border-radius:15px;box-shadow:var(--shadow);padding:20px}
+    .wheel-panel{display:flex;flex-direction:column;align-items:center;position:relative}
+    
+    .header-row{width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    
     .pointer{
       width:0;height:0;
-      border-left:22px solid transparent;
-      border-right:22px solid transparent;
-      border-top:38px solid var(--gold);
-      margin-bottom:-12px;
-      z-index:10;
-      filter:drop-shadow(0 4px 5px rgba(0,0,0,0.3));
+      border-left:20px solid transparent;
+      border-right:20px solid transparent;
+      border-top:35px solid #ef4444;
+      z-index:10;margin-bottom:-10px;
     }
-    .canvas-wrap{width:var(--wheel-size);height:var(--wheel-size);position:relative}
-    canvas{width:100%;height:100%;display:block;border-radius:50%;background:#fff;box-shadow:0 15px 45px rgba(0,0,0,0.2)}
-    .controls{display:flex;gap:12px;margin-top:20px}
-    button{border:none;border-radius:12px;padding:14px 24px;font-size:15px;font-weight:700;cursor:pointer;transition:0.3s}
+    
+    .canvas-wrap{width:var(--wheel-size);height:var(--wheel-size)}
+    canvas{width:100%;height:100%;border-radius:50%;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,0.15)}
+    
+    .controls{margin-top:25px;display:flex;gap:12px}
+    button{border:none;border-radius:10px;padding:12px 24px;font-weight:bold;cursor:pointer;transition:0.2s}
+    button:active{transform:scale(0.95)}
     .primary{background:var(--primary);color:#fff}
-    .primary:hover{background:#1e293b;transform:translateY(-2px)}
     .secondary{background:#e2e8f0;color:var(--text)}
+    
     .sidebar{display:flex;flex-direction:column;gap:20px}
-    .card-title{margin:0 0 15px;font-size:18px;border-bottom:2px solid #f1f5f9;padding-bottom:10px}
-    .winner-box{padding:20px;border-radius:15px;background:#fff;border:1px solid #e2e8f0;text-align:center}
-    .winner-box img{width:100%;max-height:200px;object-fit:cover;border-radius:12px;margin-top:15px}
-    .luxury-tip{margin-top:15px;padding:15px;background:#fcf9f5;border-left:4px solid var(--gold);font-style:italic;color:#475569;font-size:14px}
-    .list{display:grid;gap:10px;max-height:400px;overflow:auto}
-    .item{display:grid;grid-template-columns:60px 1fr;gap:15px;padding:10px;background:#f8fafc;border-radius:12px;border:1px solid #edf2f7}
-    .item img{width:60px;height:60px;object-fit:cover;border-radius:8px}
-    .popup{position:fixed;inset:0;background:rgba(15, 23, 42, 0.9);display:none;align-items:center;justify-content:center;z-index:10000}
+    .winner-box{text-align:center;padding:15px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px}
+    .winner-box img{width:100%;border-radius:10px;margin-top:10px;display:none}
+    
+    .tip-box{margin-top:15px;padding:12px;background:#eff6ff;border-left:4px solid var(--primary);font-size:14px;line-height:1.5;display:none}
+    body[dir="rtl"] .tip-box{border-left:none;border-right:4px solid var(--primary);text-align:right}
+
+    .list{max-height:400px;overflow:auto}
+    .item{display:flex;gap:10px;padding:10px;border-bottom:1px solid #f1f5f9;align-items:center}
+    .item img{width:45px;height:45px;border-radius:6px;object-fit:cover}
+    
+    .popup{position:fixed;inset:0;background:rgba(15,23,42,0.85);display:none;align-items:center;justify-content:center;z-index:99;padding:20px}
     .popup.active{display:flex}
-    .popup-card{width:min(90vw,450px);background:#fff;border-radius:24px;padding:30px;text-align:center}
-    .popup-card img{width:100%;border-radius:15px;margin:20px 0}
-    @media (max-width:980px){.app{grid-template-columns:1fr}}
+    .popup-card{background:#fff;padding:25px;border-radius:24px;width:100%;max-width:420px;text-align:center}
+    .popup-card img{width:100%;border-radius:15px;margin:15px 0}
+
+    @media (max-width:900px){.app{grid-template-columns:1fr}}
   </style>
 </head>
-<body>
+<body dir="ltr">
   <div class="app">
     <div class="panel wheel-panel">
-      <div class="title-row">
-        <h1 id="appTitle">SUFANA Luxury Giveaway</h1>
-        <button id="langBtn" class="secondary">AR</button>
+      <div class="header-row">
+        <h2 id="ui-title" style="margin:0">SUFANA Smart Care</h2>
+        <button id="langBtn" class="secondary" onclick="toggleLanguage()">AR / EN</button>
       </div>
-
+      
       <div class="pointer"></div>
       <div class="canvas-wrap">
         <canvas id="wheel" width="600" height="600"></canvas>
       </div>
-
+      
       <div class="controls">
-        <button id="spinBtn" class="primary">SPIN FOR WELLNESS</button>
-        <button id="resetWinnersBtn" class="secondary">Reset</button>
+        <button id="spinBtn" class="primary" onclick="spin()">SPIN WHEEL</button>
+        <button id="resetBtn" class="secondary" onclick="resetWinners()">Reset</button>
       </div>
     </div>
 
     <div class="sidebar">
       <div class="panel">
-        <h2 class="card-title">Latest Winner</h2>
+        <h3 id="ui-winner-title">Current Winner</h3>
         <div class="winner-box">
-          <div id="winnerText">Ready to spin...</div>
-          <img id="winnerImage" style="display:none;" />
-          <div id="winnerTip" class="luxury-tip" style="display:none;"></div>
+          <div id="winnerText">Spin the wheel!</div>
+          <img id="winnerImage" />
+          <div id="winnerTip" class="tip-box"></div>
         </div>
       </div>
       <div class="panel">
-        <h2 class="card-title">Prize Inventory</h2>
+        <h3 id="ui-list-title">Prize List</h3>
         <div class="list" id="imageList"></div>
       </div>
     </div>
@@ -91,53 +96,82 @@
 
   <div class="popup" id="winnerPopup">
     <div class="popup-card">
-      <h2 style="color:var(--gold)">Congratulations!</h2>
+      <h2 id="ui-popup-win">Winner!</h2>
       <img id="popupImg" />
-      <div id="popupText" style="font-size:22px; font-weight:bold; margin-bottom:10px;"></div>
-      <div id="popupTip" class="luxury-tip"></div>
-      <button id="closePopupBtn" class="primary" style="margin-top:25px; width:100%">Continue Journey</button>
+      <div id="popupName" style="font-size:20px; font-weight:bold"></div>
+      <div id="popupTip" class="tip-box" style="display:block"></div>
+      <button onclick="closePopup()" id="ui-close" class="primary" style="width:100%; margin-top:20px">Close</button>
     </div>
   </div>
 
   <script>
-    const luxuryTips = [
-      "Prioritize cellular regeneration with 8 hours of restorative sleep.",
-      "Infuse your water with organic cucumber and mint for luxury hydration.",
-      "Engage in mindful meditation to balance your cortisol levels.",
-      "Embrace deep breathing to oxygenate your bloodstream instantly.",
-      "Replace refined sugars with natural antioxidants like manuka honey.",
-      "Incorporate 20 minutes of vitamin D exposure every morning.",
-      "Savor high-quality dark chocolate for heart-healthy flavonoids.",
-      "Practice digital detoxing two hours before resting.",
-      "Fuel your brain with Omega-3 rich walnuts and seeds.",
-      "Elevate your posture to improve energy flow and confidence.",
-      "Start your day with warm lemon water to alkaline the body.",
-      "Choose movement that brings you joy to sustain metabolic health.",
-      "Nurture your skin with natural, cold-pressed botanical oils.",
-      "Listen to binaural beats to enhance cognitive focus.",
-      "Dedicate time to deep stretching to maintain joint longevity.",
-      "Use aromatherapy with lavender to lower evening anxiety.",
-      "Focus on single-tasking to reduce mental fatigue.",
-      "Invest in ergonomic seating to protect your spinal health.",
-      "Enjoy herbal infusions like chamomile for digestive calm.",
-      "Walk barefoot on grass for a natural grounding effect.",
-      "Consume probiotic-rich foods for a vibrant gut microbiome.",
-      "Limit caffeine intake after 2:00 PM for better sleep cycles.",
-      "Enhance indoor air quality with air-purifying plants.",
-      "Practice gratitude daily to boost your immune response.",
-      "Opt for steam baths to detoxify your lymphatic system.",
-      "Keep healthy snacks like almonds within reach at all times.",
-      "Schedule regular social connections to support mental well-being.",
-      "Use sea salt soaks to relieve muscular tension.",
-      "Focus on seasonal, locally sourced organic produce.",
-      "Remember: Consistency is the ultimate form of luxury health."
+    const langData = {
+      en: {
+        title: "SUFANA Smart Care",
+        spin: "SPIN WHEEL",
+        reset: "Reset",
+        winnerTitle: "Current Winner",
+        listTitle: "Prize List",
+        spinText: "Spin the wheel!",
+        itemLabel: "Item",
+        popupWin: "Winner!",
+        close: "Close",
+        alertEnd: "All prizes are gone!"
+      },
+      ar: {
+        title: "سُفانا سمارت كير",
+        spin: "ابدأ الدوران",
+        reset: "إعادة تعيين",
+        winnerTitle: "الفائز الحالي",
+        listTitle: "قائمة الجوائز",
+        spinText: "أدر العجلة الآن!",
+        itemLabel: "العنصر",
+        popupWin: "مبروك الفائز!",
+        close: "إغلاق",
+        alertEnd: "انتهت جميع الجوائز!"
+      }
+    };
+
+    const tips = [
+      {en: "Check your sleep app to see if you got enough deep rest.", ar: "تحقق من تطبيق النوم للتأكد من حصولك على راحة عميقة."},
+      {en: "Check your skin to make sure you are drinking enough water.", ar: "افحص بشرتك للتأكد من شرب كمية كافية من الماء."},
+      {en: "Check your heart rate today to see if you are stressed.", ar: "راقب معدل ضربات قلبك اليوم لمعرفة مستوى الإجهاد."},
+      {en: "Notice your breathing; keep it slow and steady.", ar: "لاحظ تنفسك؛ اجعله بطيئاً ومنتظماً."},
+      {en: "Try natural honey instead of sugar to keep your energy stable.", ar: "جرب العسل الطبيعي بدلاً من السكر للحفاظ على طاقتك."},
+      {en: "Get 20 minutes of morning sun to help you sleep better later.", ar: "احصل على 20 دقيقة من شمس الصباح لتحسين نومك ليلاً."},
+      {en: "Eating dark chocolate is a tasty way to help your heart.", ar: "تناول الشوكولاتة الداكنة طريقة لذيذة لدعم صحة قلبك."},
+      {en: "Put your phone away 2 hours before bed to sleep better.", ar: "ابتعد عن هاتفك قبل ساعتين من النوم لترتاح بشكل أفضل."},
+      {en: "Eat walnuts or seeds to help your brain stay sharp.", ar: "تناول الجوز أو البذور لمساعدة عقلك على البقاء حاداً."},
+      {en: "Sit up straight to keep your back healthy.", ar: "اجلس بوضعية مستقيمة للحفاظ على صحة ظهرك."},
+      {en: "Start the day with warm lemon water to wake up your body.", ar: "ابدأ يومك بماء الليمون الدافئ لتنشيط جسمك."},
+      {en: "Use a watch to track your steps and stay active.", ar: "استخدم ساعة ذكية لتتبع خطواتك والبقاء نشيطاً."},
+      {en: "Stretch every day to keep your body moving easily.", ar: "مارس التمدد يومياً للحفاظ على مرونة جسمك."},
+      {en: "Use lavender oil at night to help you relax.", ar: "استخدم زيت اللافندر ليلاً لمساعدتك على الاسترخاء."},
+      {en: "Do one thing at a time to keep your mind from getting tired.", ar: "قم بعمل شيء واحد في كل مرة لتجنب إرهاق عقلك."},
+      {en: "Fix your chair and desk to keep your back from hurting.", ar: "اضبط كرسيك ومكتبك لتجنب آلام الظهر."},
+      {en: "Drink herbal tea to help your stomach feel calm.", ar: "اشرب شاي الأعشاب لتهدئة معدتك."},
+      {en: "Walk on grass without shoes to help your body feel grounded.", ar: "امشِ على العشب بدون حذاء لتشعر بالراحة والهدوء."},
+      {en: "Eat healthy foods to keep your stomach happy.", ar: "تناول الأطعمة الصحية للحفاظ على صحة جهازك الهضمي."},
+      {en: "Stop drinking coffee after 2:00 PM so you can sleep well.", ar: "توقف عن شرب القهوة بعد الساعة 2 ظهراً لنوم أفضل."},
+      {en: "Keep plants inside to help the air stay fresh.", ar: "ضع نباتات داخلية للحفاظ على نقاء الهواء."},
+      {en: "Think of one thing you are thankful for to boost your mood.", ar: "فكر في شيء واحد تشعر بالامتنان له لتحسين مزاجك."},
+      {en: "Take a warm bath to help your body relax.", ar: "خذ حماماً دافئاً لمساعدة جسمك على الاسترخاء."},
+      {en: "Keep healthy snacks like almonds nearby.", ar: "احتفظ بوجبات خفيفة صحية مثل اللوز بجانبك."},
+      {en: "Call or meet a friend to stay happy.", ar: "تواصل مع صديق للحفاظ على صحتك النفسية."},
+      {en: "Soak in sea salt to help your muscles feel better.", ar: "استخدم الملح البحري لتقليل شد العضلات."},
+      {en: "Buy fresh fruits and veggies for the best vitamins.", ar: "اشترِ الفواكه والخضروات الطازجة لأفضل الفيتامينات."},
+      {en: "Take 5 minutes of deep silence every day.", ar: "خصص 5 دقائق من الصمت العميق كل يوم."},
+      {en: "Notice your posture while using your phone.", ar: "لاحظ وضعية جسمك أثناء استخدام الهاتف."},
+      {en: "Consistency is the key to healthy habits.", ar: "الاستمرارية هي مفتاح العادات الصحية."}
     ];
 
+    let currentLang = 'en';
     const itemCount = 30;
-    let items = JSON.parse(localStorage.getItem("sufana_luxury_items")) || Array.from({ length: itemCount }, (_, i) => ({
+    let items = JSON.parse(localStorage.getItem("sufana_final")) || Array.from({ length: itemCount }, (_, i) => ({
       id: i,
       image: `./Photo/${i + 1}.jpg`,
-      tip: luxuryTips[i % luxuryTips.length],
+      tipEn: tips[i % tips.length].en,
+      tipAr: tips[i % tips.length].ar,
       winner: false
     }));
 
@@ -147,6 +181,32 @@
 
     const canvas = document.getElementById("wheel");
     const ctx = canvas.getContext("2d");
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'en' ? 'ar' : 'en';
+      document.body.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+      updateUI();
+      drawWheel();
+      renderList();
+    }
+
+    function updateUI() {
+      const data = langData[currentLang];
+      document.getElementById("ui-title").innerText = data.title;
+      document.getElementById("spinBtn").innerText = data.spin;
+      document.getElementById("resetBtn").innerText = data.reset;
+      document.getElementById("ui-winner-title").innerText = data.winnerTitle;
+      document.getElementById("ui-list-title").innerText = data.listTitle;
+      document.getElementById("ui-popup-win").innerText = data.popupWin;
+      document.getElementById("ui-close").innerText = data.close;
+      
+      const winnerTxt = document.getElementById("winnerText");
+      if (winnerTxt.innerText.includes("Item") || winnerTxt.innerText.includes("العنصر")) {
+         // Keep winner showing if already won
+      } else {
+        winnerTxt.innerText = data.spinText;
+      }
+    }
 
     async function loadAllImages() {
       const promises = items.map(item => new Promise(resolve => {
@@ -182,13 +242,10 @@
         if (loaded && loaded.ok) {
           ctx.translate(cx, cy);
           ctx.rotate(start + slice / 2 + Math.PI / 2);
-          const imgW = radius * 1.5;
-          const imgH = radius * 1.2;
-          ctx.drawImage(loaded.img, -imgW / 2, -radius, imgW, imgH);
-          ctx.rotate(-(start + slice / 2 + Math.PI / 2));
+          ctx.drawImage(loaded.img, -radius * 0.8, -radius, radius * 1.6, radius * 1.2);
           ctx.translate(-cx, -cy);
         } else {
-          ctx.fillStyle = i % 2 === 0 ? "#1e293b" : "#334155";
+          ctx.fillStyle = i % 2 === 0 ? "#cbd5e1" : "#94a3b8";
           ctx.fill();
         }
 
@@ -198,127 +255,114 @@
         }
         ctx.restore();
 
-        // White Divider lines
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.arc(cx, cy, radius, start, end);
-        ctx.closePath();
-        ctx.strokeStyle = "rgba(255,255,255,0.25)";
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = "rgba(255,255,255,0.4)";
         ctx.stroke();
 
-        // Numbers with shadow
         const angle = start + slice / 2;
         const lx = cx + Math.cos(angle) * (radius * 0.86);
         const ly = cy + Math.sin(angle) * (radius * 0.86);
-
         ctx.save();
         ctx.translate(lx, ly);
         ctx.rotate(angle + Math.PI / 2);
         ctx.fillStyle = "#fff";
-        ctx.font = "bold 14px Arial";
-        ctx.textAlign = "center";
-        ctx.shadowBlur = 5;
-        ctx.shadowColor = "black";
-        ctx.fillText(i + 1, 0, 0);
+        ctx.font = "bold 15px Arial";
+        ctx.shadowBlur = 4; ctx.shadowColor = "black";
+        ctx.fillText(i + 1, -5, 0);
         ctx.restore();
       });
 
-      // Luxurious Center
-      ctx.beginPath();
-      ctx.arc(cx, cy, 60, 0, Math.PI * 2);
-      ctx.fillStyle = "white";
-      ctx.fill();
-      ctx.strokeStyle = "#af905d";
-      ctx.lineWidth = 6;
-      ctx.stroke();
-
-      ctx.fillStyle = "#0f172a";
-      ctx.textAlign = "center";
-      ctx.font = "bold 14px Arial";
-      ctx.fillText("SUFANA", cx, cy - 3);
-      ctx.font = "9px Arial";
-      ctx.fillText("LUXURY CARE", cx, cy + 12);
+      // Center
+      ctx.beginPath(); ctx.arc(cx, cy, 50, 0, Math.PI * 2);
+      ctx.fillStyle = "#fff"; ctx.fill();
+      ctx.strokeStyle = "#2563eb"; ctx.lineWidth = 5; ctx.stroke();
+      ctx.fillStyle = "#0f172a"; ctx.font = "bold 12px Arial"; ctx.textAlign = "center";
+      ctx.fillText("SUFANA", cx, cy + 5);
     }
 
     function spin() {
       if (spinning) return;
       const available = items.filter(v => !v.winner);
-      if (available.length === 0) return alert("You have achieved all wellness goals!");
+      if (available.length === 0) return alert(langData[currentLang].alertEnd);
 
       const winner = available[Math.floor(Math.random() * available.length)];
       const winnerIndex = items.indexOf(winner);
       
       spinning = true;
-      const duration = 6000;
+      const duration = 5000;
       const rotations = 8;
-      const sliceSize = (Math.PI * 2) / items.length;
-      const targetAngle = (Math.PI * 1.5) - (winnerIndex * sliceSize + sliceSize / 2);
-      const initialRotation = currentRotation % (Math.PI * 2);
-      const finalRotation = initialRotation + (rotations * Math.PI * 2) + (targetAngle - initialRotation);
+      const targetAngle = (Math.PI * 1.5) - (winnerIndex * ((Math.PI * 2) / items.length) + ((Math.PI * 2) / items.length) / 2);
+      const startRot = currentRotation % (Math.PI * 2);
+      const finalRot = startRot + (rotations * Math.PI * 2) + (targetAngle - startRot);
 
-      const start = performance.now();
+      const startTime = performance.now();
       function animate(time) {
-        const elapsed = time - start;
+        const elapsed = time - startTime;
         const t = Math.min(elapsed / duration, 1);
-        const ease = 1 - Math.pow(1 - t, 5); // Smooth luxurious stop
-        currentRotation = initialRotation + (finalRotation - initialRotation) * ease;
+        const ease = 1 - Math.pow(1 - t, 4);
+        currentRotation = startRot + (finalRot - startRot) * ease;
         drawWheel();
-
         if (t < 1) requestAnimationFrame(animate);
         else {
           spinning = false;
           winner.winner = true;
-          localStorage.setItem("sufana_luxury_items", JSON.stringify(items));
-          showResult(winner);
+          localStorage.setItem("sufana_final", JSON.stringify(items));
+          showWinner(winner);
           renderList();
         }
       }
       requestAnimationFrame(animate);
     }
 
-    function showResult(item) {
-      document.getElementById("winnerText").innerHTML = `<strong>Winner:</strong> Item ${item.id + 1}`;
-      document.getElementById("winnerImage").src = item.image;
-      document.getElementById("winnerImage").style.display = "block";
-      document.getElementById("winnerTip").innerText = item.tip;
-      document.getElementById("winnerTip").style.display = "block";
+    function showWinner(item) {
+      const label = langData[currentLang].itemLabel;
+      const tip = currentLang === 'en' ? item.tipEn : item.tipAr;
+      
+      document.getElementById("winnerText").innerHTML = `<b>${label} ${item.id + 1}</b>`;
+      const img = document.getElementById("winnerImage");
+      img.src = item.image;
+      img.style.display = "block";
+      
+      const tipDiv = document.getElementById("winnerTip");
+      tipDiv.innerText = tip;
+      tipDiv.style.display = "block";
 
       document.getElementById("popupImg").src = item.image;
-      document.getElementById("popupText").innerText = `Item ${item.id + 1}`;
-      document.getElementById("popupTip").innerText = item.tip;
+      document.getElementById("popupName").innerText = `${label} ${item.id + 1}`;
+      document.getElementById("popupTip").innerText = tip;
       document.getElementById("winnerPopup").classList.add("active");
     }
 
+    function closePopup() {
+      document.getElementById("winnerPopup").classList.remove("active");
+    }
+
     function renderList() {
-      const container = document.getElementById("imageList");
-      container.innerHTML = items.map(item => `
-        <div class="item" style="${item.winner ? 'opacity: 0.5' : ''}">
+      const list = document.getElementById("imageList");
+      const label = langData[currentLang].itemLabel;
+      list.innerHTML = items.map(item => `
+        <div class="item" style="${item.winner ? 'opacity:0.4' : ''}">
           <img src="${item.image}">
-          <div>
-            <strong>Item ${item.id + 1}</strong>
-            <div style="font-size:11px; color:#94a3b8; margin-top:4px">${item.tip.substring(0, 35)}...</div>
-          </div>
+          <span>${label} ${item.id + 1}</span>
         </div>
       `).join('');
     }
 
-    document.getElementById("spinBtn").onclick = spin;
-    document.getElementById("closePopupBtn").onclick = () => document.getElementById("winnerPopup").classList.remove("active");
-    document.getElementById("resetWinnersBtn").onclick = () => {
+    function resetWinners() {
       items.forEach(i => i.winner = false);
-      localStorage.removeItem("sufana_luxury_items");
+      localStorage.removeItem("sufana_final");
       renderList();
       drawWheel();
-    };
-
-    async function init() {
-      await loadAllImages();
-      renderList();
-      drawWheel();
+      document.getElementById("winnerImage").style.display = "none";
+      document.getElementById("winnerTip").style.display = "none";
+      document.getElementById("winnerText").innerText = langData[currentLang].spinText;
     }
 
-    init();
+    (async () => {
+      await loadAllImages();
+      updateUI();
+      renderList();
+      drawWheel();
+    })();
   </script>
 </body>
 </html>
