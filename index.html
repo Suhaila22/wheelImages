@@ -5,425 +5,212 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SUFANA Smart Care Giveaway Wheel</title>
   <style>
-    :root {
-      --bg: #eef2f7;
-      --card: #ffffff;
-      --text: #111827;
-      --muted: #6b7280;
-      --primary: #0f172a;
-      --secondary: #1d4ed8;
-      --danger: #ef4444;
-      --success: #10b981;
-      --shadow: 0 14px 36px rgba(0,0,0,0.12);
-      --radius: 18px;
-      --wheel-size: min(90vw, 560px);
+    :root{
+      --bg:#eef2f7;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --primary:#0f172a;
+      --secondary:#1d4ed8;
+      --danger:#ef4444;
+      --shadow:0 14px 36px rgba(0,0,0,.12);
+      --radius:18px;
+      --wheel-size:min(88vw,560px);
     }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
     }
-
-    body[dir="rtl"] {
-      direction: rtl;
+    body[dir="rtl"]{direction:rtl}
+    .app{
+      max-width:1280px;
+      margin:0 auto;
+      padding:20px;
+      display:grid;
+      grid-template-columns:1fr 390px;
+      gap:20px;
+      min-height:100vh;
     }
-
-    .app {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 20px;
-      display: grid;
-      grid-template-columns: 1fr 390px;
-      gap: 20px;
-      min-height: 100vh;
+    .panel{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
     }
-
-    .panel {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 18px;
+    .wheel-panel{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:14px;
     }
-
-    .wheel-panel {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      position: relative;
-      overflow: hidden;
+    .title-row{
+      width:100%;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
     }
-
-    .title-row {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      flex-wrap: wrap;
+    .title-row h1{
+      margin:0 0 6px;
+      font-size:24px;
     }
-
-    .title-row h1 {
-      margin: 0 0 6px;
-      font-size: 24px;
+    .subtitle{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
     }
-
-    .subtitle {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.5;
+    .top-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
     }
-
-    .top-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
+    .pointer{
+      width:0;height:0;
+      border-left:18px solid transparent;
+      border-right:18px solid transparent;
+      border-top:32px solid var(--danger);
+      margin-bottom:-8px;
+      z-index:3;
+      filter:drop-shadow(0 3px 4px rgba(0,0,0,.22));
     }
-
-    .pointer {
-      width: 0;
-      height: 0;
-      border-left: 18px solid transparent;
-      border-right: 18px solid transparent;
-      border-top: 32px solid var(--danger);
-      margin-bottom: -8px;
-      z-index: 3;
-      filter: drop-shadow(0 3px 4px rgba(0,0,0,0.22));
+    .canvas-wrap{
+      width:var(--wheel-size);
+      height:var(--wheel-size);
+      position:relative;
     }
-
-    .canvas-wrap {
-      width: var(--wheel-size);
-      height: var(--wheel-size);
-      position: relative;
+    canvas{
+      width:100%;
+      height:100%;
+      display:block;
+      border-radius:50%;
+      background:#fff;
+      box-shadow:0 20px 50px rgba(0,0,0,.22);
     }
-
-    canvas#wheel {
-      width: 100%;
-      height: 100%;
-      display: block;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.22);
-      touch-action: none;
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      width:100%;
     }
-
-    .controls {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-      width: 100%;
+    button,.fake-upload{
+      border:none;
+      border-radius:12px;
+      padding:12px 16px;
+      font-size:14px;
+      font-weight:700;
+      cursor:pointer;
+      min-height:44px;
     }
-
-    button, .file-label {
-      border: none;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 44px;
+    .primary{background:var(--primary);color:#fff}
+    .secondary{background:#e5e7eb;color:var(--text)}
+    .danger{background:#fee2e2;color:#991b1b}
+    .sidebar{display:flex;flex-direction:column;gap:16px}
+    .card-title{margin:0 0 12px;font-size:20px}
+    .winner-box,.stats-box,.settings-box{
+      padding:14px;
+      border-radius:14px;
+      background:#f8fafc;
+      border:1px solid #e5e7eb;
     }
-
-    button:hover, .file-label:hover {
-      transform: translateY(-1px);
+    .winner-box img{
+      width:100%;
+      max-height:220px;
+      object-fit:cover;
+      border-radius:12px;
+      margin-top:12px;
+      box-shadow:0 8px 24px rgba(0,0,0,.14);
     }
-
-    button:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-      transform: none;
+    .tip-box{
+      margin-top:12px;
+      padding:12px;
+      border-radius:12px;
+      background:#eff6ff;
+      border:1px solid #bfdbfe;
+      color:#1e3a8a;
+      font-size:14px;
+      line-height:1.5;
     }
-
-    .primary { background: var(--primary); color: #fff; }
-    .blue { background: var(--secondary); color: #fff; }
-    .secondary { background: #e5e7eb; color: var(--text); }
-    .danger { background: #fee2e2; color: #991b1b; }
-
-    .hidden-input {
-      display: none;
+    .settings{display:grid;gap:12px}
+    .setting{display:grid;gap:6px}
+    .setting label{font-size:13px;color:var(--muted);font-weight:700}
+    .setting .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .setting input[type="range"]{width:100%}
+    .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .stat{
+      padding:12px;border-radius:12px;background:#fff;border:1px solid #e5e7eb;text-align:center
     }
-
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    .stat .value{font-size:22px;font-weight:700}
+    .stat .label{font-size:12px;color:var(--muted);margin-top:4px}
+    .list{display:grid;gap:10px;max-height:420px;overflow:auto;padding-right:4px}
+    .item{
+      display:grid;
+      grid-template-columns:58px 1fr;
+      gap:12px;
+      align-items:center;
+      padding:8px;
+      border-radius:12px;
+      background:#f9fafb;
+      border:1px solid #e5e7eb;
     }
-
-    .card-title {
-      margin: 0 0 12px;
-      font-size: 20px;
+    .item img{
+      width:58px;height:58px;object-fit:cover;border-radius:10px;background:#ddd
     }
-
-    .winner-box,
-    .stats-box,
-    .settings-box {
-      padding: 14px;
-      border-radius: 14px;
-      background: #f8fafc;
-      border: 1px solid #e5e7eb;
+    .item .name{font-size:14px;font-weight:700}
+    .item .meta{font-size:12px;color:var(--muted);word-break:break-word;margin-top:3px}
+    .badge{
+      display:inline-block;
+      margin-top:5px;
+      padding:4px 8px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+      background:#dcfce7;
+      color:#166534;
     }
-
-    .winner-box img {
-      width: 100%;
-      max-height: 220px;
-      object-fit: cover;
-      border-radius: 12px;
-      margin-top: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+    .popup{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.72);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:10000;
+      padding:18px;
     }
-
-    .tip-box {
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 12px;
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      color: #1e3a8a;
-      font-size: 14px;
-      line-height: 1.5;
+    .popup.active{display:flex}
+    .popup-card{
+      width:min(92vw,420px);
+      background:#fff;
+      border-radius:20px;
+      padding:20px;
+      box-shadow:0 24px 50px rgba(0,0,0,.28);
+      text-align:center;
     }
-
-    .settings {
-      display: grid;
-      gap: 12px;
+    .popup-card img{
+      width:100%;
+      max-height:240px;
+      object-fit:cover;
+      border-radius:14px;
+      margin:14px 0;
     }
-
-    .setting {
-      display: grid;
-      gap: 6px;
+    .popup-title{font-size:24px;font-weight:700;margin:0}
+    .popup-subtitle{color:var(--muted);font-size:14px;margin-top:6px}
+    .popup-tip{
+      margin-top:12px;
+      padding:12px;
+      border-radius:12px;
+      background:#eff6ff;
+      color:#1e3a8a;
+      font-size:14px;
+      line-height:1.5;
     }
-
-    .setting label {
-      font-size: 13px;
-      color: var(--muted);
-      font-weight: 700;
-    }
-
-    .setting .row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .setting input[type="range"] {
-      width: 100%;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .stat {
-      padding: 12px;
-      border-radius: 12px;
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      text-align: center;
-    }
-
-    .stat .value {
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    .stat .label {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    .list {
-      display: grid;
-      gap: 10px;
-      max-height: 420px;
-      overflow: auto;
-      padding-right: 4px;
-    }
-
-    .item {
-      display: grid;
-      grid-template-columns: 58px 1fr auto;
-      gap: 12px;
-      align-items: center;
-      padding: 8px;
-      border-radius: 12px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-    }
-
-    .item img {
-      width: 58px;
-      height: 58px;
-      object-fit: cover;
-      border-radius: 10px;
-      background: #ddd;
-    }
-
-    .item .name {
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .item .meta {
-      font-size: 12px;
-      color: var(--muted);
-      word-break: break-word;
-      margin-top: 3px;
-    }
-
-    .badge {
-      display: inline-block;
-      margin-top: 5px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 700;
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .tiny-btn {
-      padding: 8px 10px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 700;
-      background: #fee2e2;
-      color: #991b1b;
-      border: none;
-      cursor: pointer;
-    }
-
-    .full-screen {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.92);
-      z-index: 9999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      padding: 16px;
-    }
-
-    .full-screen.active {
-      display: flex;
-    }
-
-    .full-screen .canvas-wrap {
-      width: min(96vw, 92vh);
-      height: min(96vw, 92vh);
-    }
-
-    .full-screen .close-btn {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-    }
-
-    body[dir="rtl"] .full-screen .close-btn {
-      right: auto;
-      left: 16px;
-    }
-
-    .confetti {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 4;
-    }
-
-    .confetti-piece {
-      position: absolute;
-      width: 10px;
-      height: 16px;
-      opacity: 0.9;
-      top: -20px;
-      animation: fall linear forwards;
-    }
-
-    @keyframes fall {
-      to {
-        transform: translateY(110vh) rotate(720deg);
-        opacity: 1;
-      }
-    }
-
-    .popup {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.72);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      padding: 18px;
-    }
-
-    .popup.active {
-      display: flex;
-    }
-
-    .popup-card {
-      width: min(92vw, 420px);
-      background: #fff;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 24px 50px rgba(0,0,0,0.28);
-      text-align: center;
-    }
-
-    .popup-card img {
-      width: 100%;
-      max-height: 240px;
-      object-fit: cover;
-      border-radius: 14px;
-      margin: 14px 0;
-    }
-
-    .popup-title {
-      font-size: 24px;
-      font-weight: 700;
-      margin: 0;
-    }
-
-    .popup-subtitle {
-      color: var(--muted);
-      font-size: 14px;
-      margin-top: 6px;
-    }
-
-    .popup-tip {
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 12px;
-      background: #eff6ff;
-      color: #1e3a8a;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    @media (max-width: 980px) {
-      .app {
-        grid-template-columns: 1fr;
-      }
-
-      .list {
-        max-height: none;
-      }
+    @media (max-width:980px){
+      .app{grid-template-columns:1fr}
+      .list{max-height:none}
     }
   </style>
 </head>
@@ -433,14 +220,10 @@
       <div class="title-row">
         <div>
           <h1 id="appTitle">SUFANA Smart Care Giveaway Wheel</h1>
-          <div class="subtitle" id="appSubtitle">
-            Spin the wheel, choose a winner automatically, and reveal a health tip with every result.
-          </div>
+          <div class="subtitle" id="appSubtitle">Spin the wheel, choose a winner automatically, and reveal a health tip with every result.</div>
         </div>
-
         <div class="top-actions">
           <button id="langBtn" class="secondary">AR</button>
-          <button id="fullscreenBtn" class="secondary">Full Screen</button>
         </div>
       </div>
 
@@ -448,7 +231,6 @@
 
       <div class="canvas-wrap">
         <canvas id="wheel" width="560" height="560"></canvas>
-        <div class="confetti" id="confettiLayer"></div>
       </div>
 
       <div class="controls">
@@ -456,8 +238,7 @@
         <button id="redrawBtn" class="secondary">Redraw</button>
         <button id="resetWinnersBtn" class="secondary">Reset Winners</button>
         <button id="resetStatsBtn" class="danger">Reset Stats</button>
-        <label class="file-label blue" for="imageUpload">Upload Images</label>
-        <input id="imageUpload" class="hidden-input" type="file" accept="image/*" multiple />
+        <button id="uploadBtn" class="secondary">Upload Disabled</button>
       </div>
     </div>
 
@@ -501,22 +282,6 @@
                 <span id="spinDurationValue">4.5s</span>
               </div>
             </div>
-
-            <div class="setting">
-              <label id="soundToggleLabel">Sound effects</label>
-              <div class="row">
-                <input id="soundToggle" type="checkbox" checked />
-                <span id="soundToggleText">Tick while spinning + winner tone</span>
-              </div>
-            </div>
-
-            <div class="setting">
-              <label id="confettiToggleLabel">Confetti</label>
-              <div class="row">
-                <input id="confettiToggle" type="checkbox" checked />
-                <span id="confettiToggleText">Celebrate the selected result</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -525,15 +290,6 @@
         <h2 class="card-title" id="imagesCardTitle">Wheel Items</h2>
         <div class="list" id="imageList"></div>
       </div>
-    </div>
-  </div>
-
-  <div class="full-screen" id="fullscreenOverlay">
-    <button id="closeFullscreenBtn" class="secondary close-btn">Close</button>
-    <div class="pointer"></div>
-    <div class="canvas-wrap">
-      <canvas id="wheelFullscreen" width="900" height="900"></canvas>
-      <div class="confetti" id="confettiLayerFullscreen"></div>
     </div>
   </div>
 
@@ -558,12 +314,11 @@
       en: {
         appTitle: "SUFANA Smart Care Giveaway Wheel",
         appSubtitle: "Spin the wheel, choose a winner automatically, and reveal a health tip with every result.",
-        fullscreen: "Full Screen",
         spinWheel: "Spin Wheel",
         redraw: "Redraw",
         resetWinners: "Reset Winners",
         resetStats: "Reset Stats",
-        uploadImages: "Upload Images",
+        uploadDisabled: "Upload Disabled",
         winnerCardTitle: "Winner",
         winner: "Winner",
         noneYet: "None yet",
@@ -573,12 +328,7 @@
         clickCountLabel: "Page Opens",
         settingsCardTitle: "Settings",
         spinDurationLabel: "Spin duration",
-        soundToggleLabel: "Sound effects",
-        soundToggleText: "Tick while spinning + winner tone",
-        confettiToggleLabel: "Confetti",
-        confettiToggleText: "Celebrate the selected result",
         imagesCardTitle: "Wheel Items",
-        uploadedImage: "Uploaded image",
         alreadyWon: "Already won",
         popupTitle: "Winner",
         popupSubtitle: "Congratulations",
@@ -586,19 +336,17 @@
         close: "Close",
         spinning: "Spinning...",
         allWinnersUsed: "All items have already won. Reset winners to spin again.",
-        keepAtLeastTwo: "Keep at least 2 items on the wheel.",
         winnersReset: "Winners have been reset.",
         statsReset: "Tracking data has been reset."
       },
       ar: {
         appTitle: "عجلة سُفانا سمارت كير",
         appSubtitle: "أدر العجلة، اختر فائزًا تلقائيًا، واعرض نصيحة صحية مع كل نتيجة.",
-        fullscreen: "ملء الشاشة",
         spinWheel: "ابدأ الدوران",
         redraw: "إعادة الرسم",
         resetWinners: "إعادة الفائزين",
         resetStats: "إعادة الإحصاءات",
-        uploadImages: "رفع صور",
+        uploadDisabled: "الرفع معطل",
         winnerCardTitle: "الفائز",
         winner: "الفائز",
         noneYet: "لا يوجد بعد",
@@ -608,12 +356,7 @@
         clickCountLabel: "مرات فتح الصفحة",
         settingsCardTitle: "الإعدادات",
         spinDurationLabel: "مدة الدوران",
-        soundToggleLabel: "المؤثرات الصوتية",
-        soundToggleText: "صوت أثناء الدوران + نغمة الفائز",
-        confettiToggleLabel: "الاحتفال",
-        confettiToggleText: "إظهار احتفال عند اختيار النتيجة",
         imagesCardTitle: "عناصر العجلة",
-        uploadedImage: "صورة مرفوعة",
         alreadyWon: "فاز سابقًا",
         popupTitle: "الفائز",
         popupSubtitle: "تهانينا",
@@ -621,7 +364,6 @@
         close: "إغلاق",
         spinning: "جارٍ الدوران...",
         allWinnersUsed: "كل العناصر فازت مسبقًا. أعِد تعيين الفائزين لتدور مرة أخرى.",
-        keepAtLeastTwo: "يجب الإبقاء على عنصرين على الأقل في العجلة.",
         winnersReset: "تمت إعادة تعيين الفائزين.",
         statsReset: "تمت إعادة تعيين بيانات التتبع."
       }
@@ -633,286 +375,47 @@
       return "id-" + Math.random().toString(36).slice(2, 10);
     }
 
-    let items = JSON.parse(localStorage.getItem("sufana_wheel_items") || "null") || [
-      {
-       window.items = items;
-       console.log("Items loaded:", items);
-    
-        id: cryptoRandomId(),
-        label_en: "Quiet Luxury",
-        label_ar: "فخامة هادئة",
-        image: "./Photo/1.jpg",
-        tip_en: "True luxury is a calm mind and a healthy heart.",
-        tip_ar: "الفخامة الحقيقية هي راحة البال وصحة القلب.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Health Value",
-        label_ar: "قيمة الصحة",
-        image: "./Photo/2.jpg",
-        tip_en: "Your health is the most valuable thing you own—treat it that way.",
-        tip_ar: "صحتك هي أغلى ما تملك — عاملها كذلك.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Moment of Care",
-        label_ar: "لحظة عناية",
-        image: "./Photo/3.jpg",
-        tip_en: "A quiet moment of care can change everything.",
-        tip_ar: "لحظة هادئة من العناية قد تغير كل شيء.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Elegant Care",
-        label_ar: "أناقة العناية",
-        image: "./Photo/4.jpg",
-        tip_en: "Elegance begins with taking care of yourself.",
-        tip_ar: "الأناقة تبدأ من العناية بنفسك.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Future Self",
-        label_ar: "مستقبلك الصحي",
-        image: "./Photo/5.jpg",
-        tip_en: "Your future self is built by today’s small choices.",
-        tip_ar: "مستقبلك الصحي يُبنى باختياراتك الصغيرة اليوم.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Peace of Mind",
-        label_ar: "راحة البال",
-        image: "./Photo/6.jpg",
-        tip_en: "Peace of mind starts with knowing your numbers.",
-        tip_ar: "راحة البال تبدأ بمعرفة قراءاتك.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Wellness Lifestyle",
-        label_ar: "أسلوب العافية",
-        image: "./Photo/7.jpg",
-        tip_en: "Wellness is not a trend—it’s a lifestyle.",
-        tip_ar: "العافية ليست موضة — بل أسلوب حياة.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Balanced Life",
-        label_ar: "حياة متوازنة",
-        image: "./Photo/8.jpg",
-        tip_en: "A balanced life is the ultimate form of success.",
-        tip_ar: "الحياة المتوازنة هي أعلى درجات النجاح.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "You Matter",
-        label_ar: "أنت مهم",
-        image: "./Photo/9.jpg",
-        tip_en: "Take care of yourself—no one can replace you.",
-        tip_ar: "اعتنِ بنفسك — لا أحد يمكنه أن يحل مكانك.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Silent Luxury",
-        label_ar: "الفخامة الصامتة",
-        image: "./Photo/10.jpg",
-        tip_en: "Health is the silent luxury behind every beautiful life.",
-        tip_ar: "الصحة هي الفخامة الصامتة خلف كل حياة جميلة.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Softness",
-        label_ar: "اللطف والهدوء",
-        image: "./Photo/11.jpg",
-        tip_en: "Slow down. Your heart deserves softness.",
-        tip_ar: "اهدأ… قلبك يستحق اللطف.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Refined Habit",
-        label_ar: "عادة راقية",
-        image: "./Photo/12.jpg",
-        tip_en: "Caring for yourself is the most refined habit.",
-        tip_ar: "العناية بنفسك هي أرقى عادة.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Healthy Identity",
-        label_ar: "هوية صحية",
-        image: "./Photo/13.jpg",
-        tip_en: "Your routine is your identity—make it healthy.",
-        tip_ar: "روتينك هو هويتك — اجعله صحيًا.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Luxury Control",
-        label_ar: "ترف التحكم",
-        image: "./Photo/14.jpg",
-        tip_en: "Luxury is having control over your wellbeing.",
-        tip_ar: "الفخامة هي أن تتحكم في صحتك.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Calm Heart",
-        label_ar: "قلب هادئ",
-        image: "./Photo/15.jpg",
-        tip_en: "A calm heart creates a powerful life.",
-        tip_ar: "القلب الهادئ يصنع حياة قوية.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Listen Early",
-        label_ar: "استمع مبكرًا",
-        image: "./Photo/16.jpg",
-        tip_en: "Your body whispers before it speaks—listen early.",
-        tip_ar: "جسمك يهمس قبل أن يصرخ — استمع مبكرًا.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Essential Care",
-        label_ar: "العناية الضرورية",
-        image: "./Photo/17.jpg",
-        tip_en: "Taking care is not extra—it’s essential.",
-        tip_ar: "العناية ليست رفاهية — بل ضرورة.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Soft Habits",
-        label_ar: "عادات لطيفة",
-        image: "./Photo/18.jpg",
-        tip_en: "Soft habits, strong results.",
-        tip_ar: "عادات بسيطة… نتائج قوية.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Invest in Health",
-        label_ar: "استثمر في صحتك",
-        image: "./Photo/19.jpg",
-        tip_en: "Invest in your health—it always pays back.",
-        tip_ar: "استثمر في صحتك — العائد مضمون.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "True Signature",
-        label_ar: "توقيعك الحقيقي",
-        image: "./Photo/20.jpg",
-        tip_en: "Your wellbeing is your true signature.",
-        tip_ar: "صحتك هي توقيعك الحقيقي.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Healthy Rhythm",
-        label_ar: "إيقاع صحي",
-        image: "./Photo/21.jpg",
-        tip_en: "A healthy rhythm creates a beautiful life.",
-        tip_ar: "الإيقاع الصحي يصنع حياة جميلة.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Care Today",
-        label_ar: "اعتنِ اليوم",
-        image: "./Photo/22.jpg",
-        tip_en: "Care today. Shine tomorrow.",
-        tip_ar: "اعتنِ اليوم… لتتألق غدًا.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Deserve Better",
-        label_ar: "تستحق الأفضل",
-        image: "./Photo/23.jpg",
-        tip_en: "You deserve a life that feels as good as it looks.",
-        tip_ar: "تستحق حياة تشعر بجمالها كما تراها.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Calm Choices",
-        label_ar: "اختيارات هادئة",
-        image: "./Photo/24.jpg",
-        tip_en: "Calm choices build powerful futures.",
-        tip_ar: "الاختيارات الهادئة تبني مستقبلًا قويًا.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "New Luxury",
-        label_ar: "الفخامة الجديدة",
-        image: "./Photo/25.jpg",
-        tip_en: "Health is the new luxury—and it’s yours.",
-        tip_ar: "الصحة هي الفخامة الجديدة — وهي لك.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Beautiful Habit",
-        label_ar: "أجمل عادة",
-        image: "./Photo/26.jpg",
-        tip_en: "The most beautiful habit is self-care.",
-        tip_ar: "أجمل عادة هي العناية بالنفس.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Elegant Journey",
-        label_ar: "رحلة أنيقة",
-        image: "./Photo/27.jpg",
-        tip_en: "Your health journey deserves elegance.",
-        tip_ar: "رحلتك الصحية تستحق الأناقة.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Strong Hearts",
-        label_ar: "قلوب قوية",
-        image: "./Photo/28.jpg",
-        tip_en: "Strong hearts are built quietly, daily.",
-        tip_ar: "القلوب القوية تُبنى بهدوء… يومًا بعد يوم.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Priority",
-        label_ar: "الأولوية",
-        image: "./Photo/29.jpg",
-        tip_en: "Make your wellbeing your priority, not your option.",
-        tip_ar: "اجعل صحتك أولوية لا خيارًا.",
-        winner: false
-      },
-      {
-        id: cryptoRandomId(),
-        label_en: "Peaceful Life",
-        label_ar: "حياة هادئة",
-        image: "./Photo/30.jpg",
-        tip_en: "A peaceful life begins with a healthy heart.",
-        tip_ar: "الحياة الهادئة تبدأ بقلب صحي.",
-        winner: false
-      }
-    ];
+    const defaultItems = [
+      ["Quiet Luxury","فخامة هادئة","./Photo/1.jpg","True luxury is a calm mind and a healthy heart.","الفخامة الحقيقية هي راحة البال وصحة القلب."],
+      ["Health Value","قيمة الصحة","./Photo/2.jpg","Your health is the most valuable thing you own—treat it that way.","صحتك هي أغلى ما تملك — عاملها كذلك."],
+      ["Moment of Care","لحظة عناية","./Photo/3.jpg","A quiet moment of care can change everything.","لحظة هادئة من العناية قد تغير كل شيء."],
+      ["Elegant Care","أناقة العناية","./Photo/4.jpg","Elegance begins with taking care of yourself.","الأناقة تبدأ من العناية بنفسك."],
+      ["Future Self","مستقبلك الصحي","./Photo/5.jpg","Your future self is built by today’s small choices.","مستقبلك الصحي يُبنى باختياراتك الصغيرة اليوم."],
+      ["Peace of Mind","راحة البال","./Photo/6.jpg","Peace of mind starts with knowing your numbers.","راحة البال تبدأ بمعرفة قراءاتك."],
+      ["Wellness Lifestyle","أسلوب العافية","./Photo/7.jpg","Wellness is not a trend—it’s a lifestyle.","العافية ليست موضة — بل أسلوب حياة."],
+      ["Balanced Life","حياة متوازنة","./Photo/8.jpg","A balanced life is the ultimate form of success.","الحياة المتوازنة هي أعلى درجات النجاح."],
+      ["You Matter","أنت مهم","./Photo/9.jpg","Take care of yourself—no one can replace you.","اعتنِ بنفسك — لا أحد يمكنه أن يحل مكانك."],
+      ["Silent Luxury","الفخامة الصامتة","./Photo/10.jpg","Health is the silent luxury behind every beautiful life.","الصحة هي الفخامة الصامتة خلف كل حياة جميلة."],
+      ["Softness","اللطف والهدوء","./Photo/11.jpg","Slow down. Your heart deserves softness.","اهدأ… قلبك يستحق اللطف."],
+      ["Refined Habit","عادة راقية","./Photo/12.jpg","Caring for yourself is the most refined habit.","العناية بنفسك هي أرقى عادة."],
+      ["Healthy Identity","هوية صحية","./Photo/13.jpg","Your routine is your identity—make it healthy.","روتينك هو هويتك — اجعله صحيًا."],
+      ["Luxury Control","ترف التحكم","./Photo/14.jpg","Luxury is having control over your wellbeing.","الفخامة هي أن تتحكم في صحتك."],
+      ["Calm Heart","قلب هادئ","./Photo/15.jpg","A calm heart creates a powerful life.","القلب الهادئ يصنع حياة قوية."],
+      ["Listen Early","استمع مبكرًا","./Photo/16.jpg","Your body whispers before it speaks—listen early.","جسمك يهمس قبل أن يصرخ — استمع مبكرًا."],
+      ["Essential Care","العناية الضرورية","./Photo/17.jpg","Taking care is not extra—it’s essential.","العناية ليست رفاهية — بل ضرورة."],
+      ["Soft Habits","عادات لطيفة","./Photo/18.jpg","Soft habits, strong results.","عادات بسيطة… نتائج قوية."],
+      ["Invest in Health","استثمر في صحتك","./Photo/19.jpg","Invest in your health—it always pays back.","استثمر في صحتك — العائد مضمون."],
+      ["True Signature","توقيعك الحقيقي","./Photo/20.jpg","Your wellbeing is your true signature.","صحتك هي توقيعك الحقيقي."],
+      ["Healthy Rhythm","إيقاع صحي","./Photo/21.jpg","A healthy rhythm creates a beautiful life.","الإيقاع الصحي يصنع حياة جميلة."],
+      ["Care Today","اعتنِ اليوم","./Photo/22.jpg","Care today. Shine tomorrow.","اعتنِ اليوم… لتتألق غدًا."],
+      ["Deserve Better","تستحق الأفضل","./Photo/23.jpg","You deserve a life that feels as good as it looks.","تستحق حياة تشعر بجمالها كما تراها."],
+      ["Calm Choices","اختيارات هادئة","./Photo/24.jpg","Calm choices build powerful futures.","الاختيارات الهادئة تبني مستقبلًا قويًا."],
+      ["New Luxury","الفخامة الجديدة","./Photo/25.jpg","Health is the new luxury—and it’s yours.","الصحة هي الفخامة الجديدة — وهي لك."],
+      ["Beautiful Habit","أجمل عادة","./Photo/26.jpg","The most beautiful habit is self-care.","أجمل عادة هي العناية بالنفس."],
+      ["Elegant Journey","رحلة أنيقة","./Photo/27.jpg","Your health journey deserves elegance.","رحلتك الصحية تستحق الأناقة."],
+      ["Strong Hearts","قلوب قوية","./Photo/28.jpg","Strong hearts are built quietly, daily.","القلوب القوية تُبنى بهدوء… يومًا بعد يوم."],
+      ["Priority","الأولوية","./Photo/29.jpg","Make your wellbeing your priority, not your option.","اجعل صحتك أولوية لا خيارًا."],
+      ["Peaceful Life","حياة هادئة","./Photo/30.jpg","A peaceful life begins with a healthy heart.","الحياة الهادئة تبدأ بقلب صحي."]
+    ].map(([label_en,label_ar,image,tip_en,tip_ar]) => ({
+      id: cryptoRandomId(), label_en, label_ar, image, tip_en, tip_ar, winner:false
+    }));
+
+    let items = JSON.parse(localStorage.getItem("sufana_wheel_items") || "null") || defaultItems;
+    window.items = items;
 
     let loadedImages = [];
     let currentRotation = 0;
     let spinning = false;
-    let tickInterval = null;
 
     const statsKey = "sufana_wheel_stats";
     const stats = JSON.parse(localStorage.getItem(statsKey) || "null") || {
@@ -920,34 +423,19 @@
       totalSpins: 0,
       history: []
     };
-
     stats.pageOpens += 1;
     saveStats();
 
-    const fallbackColors = [
-      "#0f172a",
-      "#1e293b",
-      "#334155",
-      "#1d4ed8",
-      "#2563eb",
-      "#3b82f6",
-      "#60a5fa",
-      "#93c5fd"
-    ];
+    const fallbackColors = ["#0f172a","#1e293b","#334155","#1d4ed8","#2563eb","#3b82f6","#60a5fa","#93c5fd"];
 
     const canvas = document.getElementById("wheel");
     const ctx = canvas.getContext("2d");
-    const canvasFs = document.getElementById("wheelFullscreen");
-    const ctxFs = canvasFs.getContext("2d");
 
     const spinBtn = document.getElementById("spinBtn");
     const redrawBtn = document.getElementById("redrawBtn");
     const resetWinnersBtn = document.getElementById("resetWinnersBtn");
     const resetStatsBtn = document.getElementById("resetStatsBtn");
-    const imageUpload = document.getElementById("imageUpload");
-    const fullscreenBtn = document.getElementById("fullscreenBtn");
-    const fullscreenOverlay = document.getElementById("fullscreenOverlay");
-    const closeFullscreenBtn = document.getElementById("closeFullscreenBtn");
+    const uploadBtn = document.getElementById("uploadBtn");
     const langBtn = document.getElementById("langBtn");
 
     const winnerText = document.getElementById("winnerText");
@@ -958,14 +446,9 @@
 
     const spinDurationSlider = document.getElementById("spinDuration");
     const spinDurationValue = document.getElementById("spinDurationValue");
-    const soundToggle = document.getElementById("soundToggle");
-    const confettiToggle = document.getElementById("confettiToggle");
 
     const spinCount = document.getElementById("spinCount");
     const clickCount = document.getElementById("clickCount");
-
-    const confettiLayer = document.getElementById("confettiLayer");
-    const confettiLayerFullscreen = document.getElementById("confettiLayerFullscreen");
 
     const winnerPopup = document.getElementById("winnerPopup");
     const popupTitle = document.getElementById("popupTitle");
@@ -993,39 +476,25 @@
         </svg>
       `);
 
-    function t(key) {
-      return translations[currentLang][key];
-    }
+    function t(key){ return translations[currentLang][key]; }
+    function getItemLabel(item){ return currentLang === "ar" ? item.label_ar : item.label_en; }
+    function getItemTip(item){ return currentLang === "ar" ? item.tip_ar : item.tip_en; }
 
-    function getItemLabel(item) {
-      return currentLang === "ar" ? item.label_ar : item.label_en;
-    }
+    function saveItems(){ localStorage.setItem("sufana_wheel_items", JSON.stringify(items)); }
+    function saveStats(){ localStorage.setItem(statsKey, JSON.stringify(stats)); }
 
-    function getItemTip(item) {
-      return currentLang === "ar" ? item.tip_ar : item.tip_en;
-    }
-
-    function saveItems() {
-      localStorage.setItem("sufana_wheel_items", JSON.stringify(items));
-    }
-
-    function saveStats() {
-      localStorage.setItem(statsKey, JSON.stringify(stats));
-    }
-
-    function updateTexts() {
+    function updateTexts(){
       document.documentElement.lang = currentLang;
       document.body.setAttribute("lang", currentLang);
       document.body.setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
 
       document.getElementById("appTitle").textContent = t("appTitle");
       document.getElementById("appSubtitle").textContent = t("appSubtitle");
-      fullscreenBtn.textContent = t("fullscreen");
       spinBtn.textContent = t("spinWheel");
       redrawBtn.textContent = t("redraw");
       resetWinnersBtn.textContent = t("resetWinners");
       resetStatsBtn.textContent = t("resetStats");
-      document.querySelector('label[for="imageUpload"]').textContent = t("uploadImages");
+      uploadBtn.textContent = t("uploadDisabled");
 
       document.getElementById("winnerCardTitle").textContent = t("winnerCardTitle");
       document.getElementById("tipLabel").textContent = t("tipLabel");
@@ -1036,254 +505,192 @@
 
       document.getElementById("settingsCardTitle").textContent = t("settingsCardTitle");
       document.getElementById("spinDurationLabel").textContent = t("spinDurationLabel");
-      document.getElementById("soundToggleLabel").textContent = t("soundToggleLabel");
-      document.getElementById("soundToggleText").textContent = t("soundToggleText");
-      document.getElementById("confettiToggleLabel").textContent = t("confettiToggleLabel");
-      document.getElementById("confettiToggleText").textContent = t("confettiToggleText");
-
       document.getElementById("imagesCardTitle").textContent = t("imagesCardTitle");
 
       popupTitle.textContent = t("popupTitle");
       popupSubtitle.textContent = t("popupSubtitle");
       document.getElementById("popupTipLabel").textContent = t("popupTipLabel");
       closePopupBtn.textContent = t("close");
-      closeFullscreenBtn.textContent = t("close");
 
       langBtn.textContent = currentLang === "en" ? "AR" : "EN";
 
       updateWinnerPanelTexts();
       createImageList();
       updateStatsUI();
-      drawWheel(currentRotation);
-      localStorage.setItem("sufana_lang", currentLang);
+      updateDurationLabel();
     }
 
-    function updateWinnerPanelTexts() {
+    function updateWinnerPanelTexts(){
       const currentWinnerId = winnerText.dataset.winnerId;
       if (!currentWinnerId) {
         winnerText.innerHTML = `<strong>${t("winner")}:</strong> ${t("noneYet")}`;
         winnerTipBox.style.display = "none";
         return;
       }
-
       const item = items.find(x => x.id === currentWinnerId);
       if (!item) return;
-
       winnerText.innerHTML = `<strong>${t("winner")}:</strong> ${getItemLabel(item)}`;
       winnerTip.textContent = getItemTip(item);
       winnerTipBox.style.display = "block";
     }
 
-    function updateStatsUI() {
+    function updateStatsUI(){
       spinCount.textContent = stats.totalSpins;
       clickCount.textContent = stats.pageOpens;
     }
 
-    function updateDurationLabel() {
-      spinDurationValue.textContent =
-        currentLang === "ar"
-          ? `${spinDurationSlider.value} ث`
-          : `${spinDurationSlider.value}s`;
+    function updateDurationLabel(){
+      spinDurationValue.textContent = currentLang === "ar"
+        ? `${spinDurationSlider.value} ث`
+        : `${spinDurationSlider.value}s`;
     }
-
     spinDurationSlider.addEventListener("input", updateDurationLabel);
 
-    function createImageList() {
+    function createImageList(){
       imageList.innerHTML = "";
-
-      items.forEach((item, index) => {
+      items.forEach((item) => {
         const row = document.createElement("div");
         row.className = "item";
-
-        const label = getItemLabel(item);
-        const metaText = item.image.startsWith("blob:") ? t("uploadedImage") : item.image;
-
-        const info = document.createElement("div");
-        info.innerHTML = `
-          <div class="name">${label}</div>
-          <div class="meta">${metaText}</div>
-          ${item.winner ? `<span class="badge">${t("alreadyWon")}</span>` : ""}
+        row.innerHTML = `
+          <img src="${item.image}" alt="${getItemLabel(item)}">
+          <div>
+            <div class="name">${getItemLabel(item)}</div>
+            <div class="meta">${item.image}</div>
+            ${item.winner ? `<span class="badge">${t("alreadyWon")}</span>` : ""}
+          </div>
         `;
-
-        const img = document.createElement("img");
-        img.src = item.image;
-        img.alt = label;
-
-        const removeBtn = document.createElement("button");
-        removeBtn.className = "tiny-btn";
-        removeBtn.textContent = "×";
-        removeBtn.title = "Remove";
-        removeBtn.addEventListener("click", () => {
-          if (items.length <= 2) {
-            alert(t("keepAtLeastTwo"));
-            return;
-          }
-          items.splice(index, 1);
-          saveItems();
-          reloadAndDraw();
-        });
-
-        row.appendChild(img);
-        row.appendChild(info);
-        row.appendChild(removeBtn);
         imageList.appendChild(row);
       });
     }
 
-function loadImages() {
-  return Promise.all(
-    items.map((item, i) => new Promise((resolve) => {
-      const img = new Image();
+    function loadImages(){
+      return Promise.all(
+        items.map((item) => new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve({ ok:true, img });
+          img.onerror = () => {
+            console.log("FAILED:", item.image, new URL(item.image, location.href).href);
+            resolve({ ok:false, img:null });
+          };
+          img.src = item.image;
+        }))
+      );
+    }
 
-      console.log("Trying:", item.image);
-
-      img.onload = () => {
-        console.log("✅ Loaded:", item.image);
-        resolve({ ok: true, img });
-      };
-
-      img.onerror = () => {
-        console.log("❌ FAILED:", item.image);
-        resolve({ ok: false, img: null });
-      };
-
-      img.src = item.image;
-    }))
-  );
-}
-
-    function drawWheelOnContext(context, size, rotation = 0) {
+    function drawWheel(rotation = currentRotation){
+      const size = canvas.width;
       const centerX = size / 2;
       const centerY = size / 2;
       const radius = size * 0.46;
       const sliceAngle = (2 * Math.PI) / items.length;
 
-      context.clearRect(0, 0, size, size);
+      ctx.clearRect(0, 0, size, size);
 
       for (let i = 0; i < items.length; i++) {
         const start = rotation + i * sliceAngle - Math.PI / 2;
         const end = start + sliceAngle;
 
-        context.beginPath();
-        context.moveTo(centerX, centerY);
-        context.arc(centerX, centerY, radius, start, end);
-        context.closePath();
-        context.fillStyle = fallbackColors[i % fallbackColors.length];
-        context.fill();
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, start, end);
+        ctx.closePath();
+        ctx.fillStyle = fallbackColors[i % fallbackColors.length];
+        ctx.fill();
 
-        context.save();
-        context.beginPath();
-        context.moveTo(centerX, centerY);
-        context.arc(centerX, centerY, radius, start, end);
-        context.closePath();
-        context.clip();
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, start, end);
+        ctx.closePath();
+        ctx.clip();
 
         const loaded = loadedImages[i];
         if (loaded && loaded.ok && loaded.img) {
-        const img = loaded.img;
-        context.drawImage(img, centerX - radius, centerY - radius, radius * 2, radius * 2);
-         } else {
-        context.fillStyle = fallbackColors[i % fallbackColors.length];
-        context.fill();
+          const img = loaded.img;
+
+          const temp = document.createElement("canvas");
+          temp.width = 220;
+          temp.height = 220;
+          const tctx = temp.getContext("2d");
+
+          const side = Math.min(img.width, img.height);
+          const sx = (img.width - side) / 2;
+          const sy = (img.height - side) / 2;
+          tctx.drawImage(img, sx, sy, side, side, 0, 0, 220, 220);
+
+          ctx.translate(centerX, centerY);
+          ctx.rotate(start + sliceAngle / 2);
+          ctx.drawImage(temp, radius * 0.18, -42, 84, 84);
+          ctx.resetTransform();
         }
 
-          context.save();
-          context.translate(centerX, centerY);
-          context.rotate(start + sliceAngle / 2);
-          context.translate(radius * 0.42, 0);
-          context.rotate(Math.PI / 2);
+        ctx.restore();
 
-          const scale = Math.max(drawArea / img.width, drawArea / img.height);
-          const w = img.width * scale;
-          const h = img.height * scale;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, start, end);
+        ctx.closePath();
+        ctx.fillStyle = items[i].winner ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.08)";
+        ctx.fill();
 
-          context.globalAlpha = items[i].winner ? 0.35 : 0.93;
-          context.drawImage(img, -w / 2, -h / 2, w, h);
-          context.restore();
-        } else {
-          context.fillStyle = "rgba(255,255,255,0.35)";
-          context.fillRect(0, 0, size, size);
-        }
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, start, end);
+        ctx.closePath();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "rgba(255,255,255,0.95)";
+        ctx.stroke();
 
-        context.restore();
-
-        context.beginPath();
-        context.moveTo(centerX, centerY);
-        context.arc(centerX, centerY, radius, start, end);
-        context.closePath();
-        context.fillStyle = items[i].winner ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.10)";
-        context.fill();
-
-        context.beginPath();
-        context.moveTo(centerX, centerY);
-        context.arc(centerX, centerY, radius, start, end);
-        context.closePath();
-        context.lineWidth = Math.max(2, size * 0.004);
-        context.strokeStyle = "rgba(255,255,255,0.95)";
-        context.stroke();
-
-        context.save();
-        context.translate(centerX, centerY);
-        context.rotate(start + sliceAngle / 2);
-        context.textAlign = "center";
-        context.fillStyle = "#111827";
-        context.strokeStyle = "rgba(255,255,255,0.96)";
-        context.lineWidth = Math.max(4, size * 0.008);
-        context.font = `bold ${Math.max(13, size * 0.028)}px Arial`;
-        const labelRadius = radius * 0.72;
-        const label = getItemLabel(items[i]);
-        context.strokeText(label, labelRadius, 0);
-        context.fillText(label, labelRadius, 0);
-        context.restore();
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(start + sliceAngle / 2);
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#111827";
+        ctx.strokeStyle = "rgba(255,255,255,0.96)";
+        ctx.lineWidth = 4;
+        ctx.font = "bold 12px Arial";
+        const label = String(i + 1);
+        ctx.strokeText(label, radius * 0.72, 0);
+        ctx.fillText(label, radius * 0.72, 0);
+        ctx.restore();
       }
 
-      context.beginPath();
-      context.arc(centerX, centerY, size * 0.09, 0, 2 * Math.PI);
-      context.fillStyle = "#ffffff";
-      context.fill();
-      context.lineWidth = Math.max(5, size * 0.01);
-      context.strokeStyle = "#111827";
-      context.stroke();
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, size * 0.09, 0, 2 * Math.PI);
+      ctx.fillStyle = "#ffffff";
+      ctx.fill();
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = "#111827";
+      ctx.stroke();
 
       if (logo.complete) {
         const logoSize = size * 0.12;
-        context.drawImage(logo, centerX - logoSize / 2, centerY - logoSize / 2, logoSize, logoSize);
-      } else {
-        context.fillStyle = "#111827";
-        context.textAlign = "center";
-        context.font = `bold ${Math.max(14, size * 0.024)}px Arial`;
-        context.fillText("SUFANA", centerX, centerY + 5);
+        ctx.drawImage(logo, centerX - logoSize / 2, centerY - logoSize / 2, logoSize, logoSize);
       }
     }
 
-    function drawWheel(rotation = currentRotation) {
-      drawWheelOnContext(ctx, canvas.width, rotation);
-      drawWheelOnContext(ctxFs, canvasFs.width, rotation);
-    }
-
-    function getWheelIndexForItem(itemId) {
+    function getWheelIndexForItem(itemId){
       return items.findIndex(item => item.id === itemId);
     }
 
-    function computeTargetRotationForIndex(index) {
+    function computeTargetRotationForIndex(index){
       const sliceAngle = (2 * Math.PI) / items.length;
       const centerAngle = index * sliceAngle + sliceAngle / 2;
       const pointerAngle = 3 * Math.PI / 2;
-      const desiredRotation = pointerAngle - centerAngle;
-      return desiredRotation;
+      return pointerAngle - centerAngle;
     }
 
-    function normalizeRotation(angle) {
+    function normalizeRotation(angle){
       return ((angle % (2 * Math.PI)) + (2 * Math.PI)) % (2 * Math.PI);
     }
 
-    function chooseAvailableWinner() {
+    function chooseAvailableWinner(){
       const available = items.filter(item => !item.winner);
       if (!available.length) return null;
       return available[Math.floor(Math.random() * available.length)];
     }
 
-    function showWinner(item) {
+    function showWinner(item){
       winnerText.dataset.winnerId = item.id;
       winnerText.innerHTML = `<strong>${t("winner")}:</strong> ${getItemLabel(item)}`;
       winnerImage.src = item.image;
@@ -1297,24 +704,13 @@ function loadImages() {
       popupText.textContent = getItemLabel(item);
       popupTip.textContent = getItemTip(item);
       winnerPopup.classList.add("active");
-
-      if (confettiToggle.checked) {
-        launchConfetti(confettiLayer);
-        if (fullscreenOverlay.classList.contains("active")) {
-          launchConfetti(confettiLayerFullscreen);
-        }
-      }
-
-      if (soundToggle.checked) {
-        playWinnerTone();
-      }
     }
 
-    function closePopup() {
+    function closePopup(){
       winnerPopup.classList.remove("active");
     }
 
-    function spinWheel() {
+    function spinWheel(){
       if (spinning || items.length < 2) return;
 
       const chosen = chooseAvailableWinner();
@@ -1343,9 +739,7 @@ function loadImages() {
       const initialRotation = currentRotation;
       const startTime = performance.now();
 
-      startTicking();
-
-      function animate(now) {
+      function animate(now){
         const elapsed = now - startTime;
         const progress = Math.min(elapsed / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 4);
@@ -1356,8 +750,6 @@ function loadImages() {
         if (progress < 1) {
           requestAnimationFrame(animate);
         } else {
-          stopTicking();
-
           chosen.winner = true;
           saveItems();
 
@@ -1373,8 +765,8 @@ function loadImages() {
 
           createImageList();
           drawWheel(currentRotation);
-
           showWinner(chosen);
+
           spinning = false;
           spinBtn.disabled = false;
         }
@@ -1383,87 +775,22 @@ function loadImages() {
       requestAnimationFrame(animate);
     }
 
-    function launchConfetti(layer) {
-      layer.innerHTML = "";
-      const colors = ["#ef4444", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6", "#ec4899"];
-      const count = 90;
-
-      for (let i = 0; i < count; i++) {
-        const piece = document.createElement("div");
-        piece.className = "confetti-piece";
-        piece.style.left = `${Math.random() * 100}%`;
-        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
-        piece.style.transform = `rotate(${Math.random() * 360}deg)`;
-        piece.style.animationDuration = `${2.4 + Math.random() * 2.2}s`;
-        piece.style.animationDelay = `${Math.random() * 0.35}s`;
-        piece.style.width = `${8 + Math.random() * 6}px`;
-        piece.style.height = `${10 + Math.random() * 12}px`;
-        layer.appendChild(piece);
-      }
-
-      setTimeout(() => {
-        layer.innerHTML = "";
-      }, 5000);
+    async function reloadAndDraw(){
+      loadedImages = await loadImages();
+      console.log("LoadedImages:", loadedImages);
+      drawWheel();
     }
 
-    function playBeep(freq = 700, duration = 0.04, type = "square", gainValue = 0.03) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-      const audioCtx = playBeep.audioCtx || new AudioCtx();
-      playBeep.audioCtx = audioCtx;
-
-      const oscillator = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-
-      oscillator.type = type;
-      oscillator.frequency.value = freq;
-      gain.gain.value = gainValue;
-
-      oscillator.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      const now = audioCtx.currentTime;
-      oscillator.start(now);
-      oscillator.stop(now + duration);
-    }
-
-    function startTicking() {
-      if (!soundToggle.checked) return;
-      stopTicking();
-      tickInterval = setInterval(() => {
-        playBeep(900, 0.02, "square", 0.02);
-      }, 110);
-    }
-
-    function stopTicking() {
-      if (tickInterval) {
-        clearInterval(tickInterval);
-        tickInterval = null;
-      }
-    }
-
-    function playWinnerTone() {
-      playBeep(660, 0.08, "sine", 0.035);
-      setTimeout(() => playBeep(880, 0.08, "sine", 0.035), 110);
-      setTimeout(() => playBeep(1180, 0.12, "sine", 0.04), 230);
-    }
-
-    async function reloadAndDraw() {
-    loadedImages = await loadImages();
-    console.log("LoadedImages:", loadedImages);
-    drawWheel();
-    }
-
-    imageUpload.addEventListener("change", async (event) => {
+    document.getElementById("uploadBtn").addEventListener("click", () => {
       alert("Upload is disabled in live site. Use images from Photo folder.");
-      event.target.value = "";
     });
 
     spinBtn.addEventListener("click", spinWheel);
     redrawBtn.addEventListener("click", () => drawWheel(currentRotation));
 
     resetWinnersBtn.addEventListener("click", async () => {
-      items = items.map(item => ({ ...item, winner: false }));
+      items = items.map(item => ({ ...item, winner:false }));
+      window.items = items;
       saveItems();
       await reloadAndDraw();
       alert(t("winnersReset"));
@@ -1478,38 +805,20 @@ function loadImages() {
       alert(t("statsReset"));
     });
 
-    fullscreenBtn.addEventListener("click", () => {
-      fullscreenOverlay.classList.add("active");
-      drawWheel(currentRotation);
-    });
-
-    closeFullscreenBtn.addEventListener("click", () => {
-      fullscreenOverlay.classList.remove("active");
-    });
-
-    fullscreenOverlay.addEventListener("click", (event) => {
-      if (event.target === fullscreenOverlay) {
-        fullscreenOverlay.classList.remove("active");
-      }
-    });
-
     closePopupBtn.addEventListener("click", closePopup);
     winnerPopup.addEventListener("click", (event) => {
-      if (event.target === winnerPopup) {
-        closePopup();
-      }
+      if (event.target === winnerPopup) closePopup();
     });
 
     langBtn.addEventListener("click", () => {
       currentLang = currentLang === "en" ? "ar" : "en";
-      updateDurationLabel();
       updateTexts();
+      drawWheel(currentRotation);
     });
 
-    async function init() {
-      updateDurationLabel();
-      await reloadAndDraw();
+    async function init(){
       updateTexts();
+      await reloadAndDraw();
     }
 
     init();
